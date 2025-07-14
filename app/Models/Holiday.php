@@ -12,13 +12,12 @@ class Holiday extends Model
     protected $table = 'holidays';
 
     protected $fillable = [
-        'date',
         'name',
-        'every_year',
+        'date'
     ];
 
     protected $casts = [
+        'name' => 'string',
         'date' => 'date',
-        'every_year' => 'boolean',
     ];
 }

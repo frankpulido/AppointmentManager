@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Appointment extends Model
 {
     use HasFactory;
-    public const VALID_STATUSES = ['scheduled', 'cancelled', 'no-show'];
+    public const VALID_STATUSES = ['scheduled', 'cancelled', 'no-show', 're-schedule'];
     public const VALID_KINDS = ['diagnose', 'treatment'];
     protected $table = 'appointments';
     protected $fillable = [

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class FreeTimeSlot extends Model
+class AvailableTimeSlot extends Model
 {
     use HasFactory;
     protected $table = 'available_time_slots';
