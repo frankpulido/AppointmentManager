@@ -24,7 +24,7 @@ class Practitioner extends Model
         'last_name' => 'string',
         'specialization' => 'string',
         'email' => 'email',
-        'phone' => 'string',
+        'phone' => 'integer',
     ];
 
     public function vacations()

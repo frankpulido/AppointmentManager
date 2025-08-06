@@ -22,4 +22,9 @@ class Vacation extends Model
         'end_date' => 'datetime',
         'reason' => 'string',
     ];
+
+    public function practitioner()
+    {
+        return $this->belongsTo(Practitioner::class);
+    }
 }
