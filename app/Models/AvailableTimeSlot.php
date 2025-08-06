@@ -9,7 +9,6 @@ class AvailableTimeSlot extends Model
 {
     use HasFactory;
     protected $table = 'available_time_slots';
-    protected $guarded = [];
     protected $fillable = [
         'date',
         'start_time',

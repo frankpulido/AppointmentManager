@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('available_time_slots', function (Blueprint $table) {
+        Schema::create('available_time_slots_diagnosis', function (Blueprint $table) {
             $table->id();
             $table->date('date');
             $table->time('start_time');
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('available_time_slots');
+        Schema::dropIfExists('available_time_slots_diagnosis');
     }
 };

@@ -10,18 +10,15 @@ use App\Models\Holiday;
 use App\Models\Vacation;
 use App\Models\AvailableTimeSlot;
 
-
-class AvailableTimeSlotSeeder extends Seeder
+class AvailableTimeSlotDiagnosisSeeder extends Seeder
 {
     private array $timeSlots = [
-        ['08:30:00', '09:30:00'],
-        ['10:00:00', '11:00:00'],
-        ['11:15:00', '12:15:00'],
-        ['12:30:00', '13:30:00'],
-        ['15:00:00', '16:00:00'],
-        ['16:15:00', '17:15:00'],
-        ['17:30:00', '18:30:00'],
-        ['18:45:00', '19:45:00'],
+        ['08:30:00', '10:00:00'],
+        ['10:30:00', '12:00:00'],
+        ['12:30:00', '14:00:00'],
+        ['15:00:00', '16:30:00'],
+        ['17:00:00', '18:30:00'],
+        ['19:00:00', '20:30:00'],
     ];
     /**
      * Run the database seeds.
@@ -44,7 +41,7 @@ class AvailableTimeSlotSeeder extends Seeder
             }
 
             foreach ($this->timeSlots as [$startTime, $endTime]) {
-                DB::table('available_time_slots')->updateOrInsert(
+                DB::table('available_time_slots_diagnosis')->updateOrInsert(
                     [
                         'date' => $date,
                         'start_time' => $startTime,
