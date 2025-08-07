@@ -14,9 +14,9 @@ class AppointmentObserver
     public function created(Appointment $appointment): void
     {
         $practitionerId = $appointment->practitioner_id;
-        $date = $appointment->date;
-        $start = $appointment->start_time;
-        $end = $appointment->end_time;
+        $date = $appointment->appointment_date;
+        $start = $appointment->appointment_start_time;
+        $end = $appointment->appointment_end_time;
 
         $models = [AvailableTimeSlot::class, AvailableTimeSlotDiagnosis::class];
 
