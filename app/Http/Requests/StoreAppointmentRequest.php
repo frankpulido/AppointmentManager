@@ -23,13 +23,13 @@ class StoreAppointmentRequest extends FormRequest
     {
         return [
             'practitioner_id' => 'required|exists:practitioners,id',
-            'date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
+            'appointment_date' => 'required|date',
+            'appointment_start_time' => 'required|date_format:H:i',
+            'appointment_end_time' => 'required|date_format:H:i|after:appointmentstart_time',
             'patient_first_name' => 'required|string|max:255',
             'patient_last_name' => 'required|string|max:255',
             'patient_email' => 'nullable|email|max:255',
-            'patient_phone' => 'nullable|string|max:15',
-            'kind_of_appointment' => 'required|in:diagnose,treatment',];
+            'patient_phone' => 'required|string|max:15',
+            'kind_of_appointment' => 'required|in:diagnose,treatment'];
     }
 }

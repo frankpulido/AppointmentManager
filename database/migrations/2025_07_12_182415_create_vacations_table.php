@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('vacations', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('practitioner_id')->references('id')->on('practitioners')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
+            $table->string('reason')->nullable();
             $table->timestamps();
         });
     }

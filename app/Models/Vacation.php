@@ -18,6 +18,7 @@ class Vacation extends Model
     ];
 
     protected $casts = [
+        'practitioner_id' => 'integer',
         'start_date' => 'datetime',
         'end_date' => 'datetime',
         'reason' => 'string',

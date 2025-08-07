@@ -23,10 +23,16 @@ class AppointmentController extends Controller
         if (!$slot) {
             return response()->json(['error' => 'Esta hora de visita no esta disponible'], 400);
         } else {
+            /*
             $appointment = Appointment::create([
                 ...$validated,
                 'status' => 'scheduled',
             ]);
+            */
+            $appointment = new Appointment($validated);
+            $appointment->status = 'scheduled';
+            $appointment->save();
+
             return response()->json([
                 'message' => 'Su cita ha sido reservada con éxito',
                 'appointment' => $appointment],
@@ -41,9 +47,9 @@ class AppointmentController extends Controller
             : AvailableTimeSlot::class;
 
         return $model::where('practitioner_id', $validated['practitioner_id'])
-            ->where('date', $validated['date'])
-            ->where('start_time', $validated['start_time'])
-            ->where('end_time', $validated['end_time'])
+            ->where('date', $validated['appointment_date'])
+            ->where('start_time', $validated['appointment_start_time'])
+            ->where('end_time', $validated['appointment_end_time'])
             ->first();
     }
 }

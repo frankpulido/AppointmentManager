@@ -2,14 +2,15 @@
 declare(strict_types=1);
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+//use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 use App\Models\Holiday;
 use App\Models\Vacation;
 use App\Models\AvailableTimeSlot;
-
+use App\Models\Practitioner;
+use App\Services\VacationService;
 
 class AvailableTimeSlotSeeder extends Seeder
 {
@@ -29,7 +30,8 @@ class AvailableTimeSlotSeeder extends Seeder
     public function run(): void
     {
         $holidays = Holiday::pluck('date')->toArray();
-        $vacations = Vacation::pluck('date')->toArray();
+        $practitioners = Practitioner::pluck('id')->toArray();
+        $vacationService = new VacationService();
 
         $start = Carbon::today();
         $end = Carbon::create($start->year + 1, 12, 31);
@@ -39,18 +41,25 @@ class AvailableTimeSlotSeeder extends Seeder
                 continue; // skip Saturday and Sunday
             }
 
-            if (in_array($date, $holidays) || in_array($date, $vacations)) {
-                continue; // skip holidays and vacations
+            if (in_array($date, $holidays)) {
+                continue; // skip holidays
             }
 
-            foreach ($this->timeSlots as [$startTime, $endTime]) {
-                DB::table('available_time_slots')->updateOrInsert(
-                    [
-                        'date' => $date,
-                        'start_time' => $startTime,
-                        'end_time' => $endTime,
-                    ]
-                );
+            foreach ($practitioners as $practitioner_id) {
+                if ($vacationService->isDateInVacation($practitioner_id, $date)) {
+                    continue; // skip vacation days
+                }
+
+                foreach ($this->timeSlots as [$startTime, $endTime]) {
+                    DB::table('available_time_slots')->updateOrInsert(
+                        [
+                            'practitioner_id' => $practitioner_id,
+                            'date' => $date,
+                            'start_time' => $startTime,
+                            'end_time' => $endTime,
+                        ]
+                    );
+                }
             }
         }
     }

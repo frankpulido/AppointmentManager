@@ -10,13 +10,19 @@ class AvailableTimeSlot extends Model
     use HasFactory;
     protected $table = 'available_time_slots';
     protected $fillable = [
+        'practitioner_id',
         'date',
         'start_time',
         'end_time',
     ];
     protected $casts = [
+        'practitioner_id' => 'integer',
         'date' => 'date',
         'start_time' => 'datetime',
         'end_time' => 'datetime',
     ];
+    public function practitioner()
+    {
+        return $this->belongsTo(Practitioner::class);
+    }
 }

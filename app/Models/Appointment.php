@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Observers\AppointmentObserver;
 
 #[ObservedBy([AppointmentObserver::class])]
@@ -14,24 +15,31 @@ class Appointment extends Model
     public const VALID_KINDS = ['diagnose', 'treatment'];
     protected $table = 'appointments';
     protected $fillable = [
+        'practitioner_id',
+        'appointment_date',
+        'appointment_start_time',
+        'appointment_end_time',
         'patient_first_name',
         'patient_last_name',
         'patient_email',
         'patient_phone',
-        'practitioner_id',
         'kind_of_appointment',
-        'appointment_date',
-        'appointment_start_time',
-        'appointment_end_time',
         'status',
     ];
     protected $casts = [
-        'status' => 'string',
-        //'status' => 'enum:'.implode(',', self::VALID_STATUSES),
-        'kind_of_appointment' => 'string',
-        //'kind_of_appointment' => 'enum:'.implode(',', self::VALID_KINDS),
+        'practitioner_id' => 'integer',
         'appointment_date' => 'date',
         'appointment_start_time' => 'datetime',
         'appointment_end_time' => 'datetime',
+        'patient_first_name' => 'string',
+        'patient_last_name' => 'string',
+        'patient_email' => 'string',
+        'patient_phone' => 'string',
+        'kind_of_appointment' => 'string',
+        'status' => 'string',
     ];
+    public function practitioner()
+    {
+        return $this->belongsTo(Practitioner::class);
+    }
 }

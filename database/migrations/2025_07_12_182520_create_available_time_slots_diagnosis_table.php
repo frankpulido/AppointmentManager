@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('available_time_slots_diagnosis', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('practitioner_id')->references('id')->on('practitioners')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');
             $table->date('date');
             $table->time('start_time');
             $table->time('end_time');

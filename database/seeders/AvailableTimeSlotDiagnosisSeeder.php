@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 use App\Models\Holiday;
 use App\Models\Vacation;
-use App\Models\AvailableTimeSlot;
+use App\Models\AvailableTimeSlotDiagnosis;
+use App\Models\Practitioner;
+use App\Services\VacationService;
 
 class AvailableTimeSlotDiagnosisSeeder extends Seeder
 {
@@ -26,7 +28,8 @@ class AvailableTimeSlotDiagnosisSeeder extends Seeder
     public function run(): void
     {
         $holidays = Holiday::pluck('date')->toArray();
-        $vacations = Vacation::pluck('date')->toArray();
+        $practitioners = Practitioner::pluck('id')->toArray();
+        $vacationService = new VacationService();
 
         $start = Carbon::today();
         $end = Carbon::create($start->year + 1, 12, 31);
@@ -36,18 +39,25 @@ class AvailableTimeSlotDiagnosisSeeder extends Seeder
                 continue; // skip Saturday and Sunday
             }
 
-            if (in_array($date, $holidays) || in_array($date, $vacations)) {
-                continue; // skip holidays and vacations
+            if (in_array($date, $holidays)) {
+                continue; // skip holidays
             }
 
-            foreach ($this->timeSlots as [$startTime, $endTime]) {
-                DB::table('available_time_slots_diagnosis')->updateOrInsert(
-                    [
-                        'date' => $date,
-                        'start_time' => $startTime,
-                        'end_time' => $endTime,
-                    ]
-                );
+            foreach ($practitioners as $practitioner_id) {
+                if ($vacationService->isDateInVacation($practitioner_id, $date)) {
+                    continue; // skip vacation days
+                }
+
+                foreach ($this->timeSlots as [$startTime, $endTime]) {
+                    DB::table('available_time_slots_diagnosis')->updateOrInsert(
+                        [
+                            'practitioner_id' => $practitioner_id,
+                            'date' => $date,
+                            'start_time' => $startTime,
+                            'end_time' => $endTime,
+                        ]
+                    );
+                }
             }
         }
     }
