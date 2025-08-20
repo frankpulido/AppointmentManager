@@ -29,8 +29,8 @@ class Appointment extends Model
     protected $casts = [
         'practitioner_id' => 'integer',
         'appointment_date' => 'date',
-        'appointment_start_time' => 'datetime',
-        'appointment_end_time' => 'datetime',
+        'appointment_start_time' => 'time',
+        'appointment_end_time' => 'time',
         'patient_first_name' => 'string',
         'patient_last_name' => 'string',
         'patient_email' => 'string',

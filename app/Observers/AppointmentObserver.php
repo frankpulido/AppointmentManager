@@ -29,7 +29,8 @@ class AppointmentObserver
                 return (
                     ($slot->start_time >= $start && $slot->start_time < $end) ||
                     ($slot->end_time > $start && $slot->end_time <= $end) ||
-                    ($slot->start_time <= $start && $slot->end_time >= $end)
+                    ($slot->start_time <= $start && $slot->end_time >= $end) ||
+                    ($slot->start_time >= $start && $slot->end_time <= $end)
                 );
             });
 
