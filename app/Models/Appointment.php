@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Observers\AppointmentObserver;
 
@@ -26,18 +28,27 @@ class Appointment extends Model
         'kind_of_appointment',
         'status',
     ];
+
     protected $casts = [
-        'practitioner_id' => 'integer',
         'appointment_date' => 'date',
+        /*
         'appointment_start_time' => 'time',
         'appointment_end_time' => 'time',
-        'patient_first_name' => 'string',
-        'patient_last_name' => 'string',
-        'patient_email' => 'string',
-        'patient_phone' => 'string',
-        'kind_of_appointment' => 'string',
-        'status' => 'string',
+        */
     ];
+
+    /*
+    protected function appointmentStartTime() : Attribute
+    {
+        return Attribute::make(fn($value) => Carbon::parse($value)->format('H:i'));
+    }
+
+    protected function appointmentEndTime() : Attribute
+    {
+        return Attribute::make(fn($value) => Carbon::parse($value)->format('H:i'));
+    }
+    */
+
     public function practitioner()
     {
         return $this->belongsTo(Practitioner::class);

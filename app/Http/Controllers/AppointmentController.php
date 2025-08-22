@@ -23,12 +23,6 @@ class AppointmentController extends Controller
         if (!$slot) {
             return response()->json(['error' => 'Esta hora de visita no esta disponible'], 400);
         } else {
-            /*
-            $appointment = Appointment::create([
-                ...$validated,
-                'status' => 'scheduled',
-            ]);
-            */
             $appointment = new Appointment($validated);
             $appointment->status = 'scheduled';
             $appointment->save();

@@ -3,6 +3,8 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Appointment;
+use Illuminate\Support\Facades\App;
 
 class StoreAppointmentRequest extends FormRequest
 {
@@ -24,12 +26,12 @@ class StoreAppointmentRequest extends FormRequest
         return [
             'practitioner_id' => 'required|exists:practitioners,id',
             'appointment_date' => 'required|date',
-            'appointment_start_time' => 'required|date_format:H:i',
-            'appointment_end_time' => 'required|date_format:H:i|after:appointmentstart_time',
+            'appointment_start_time' => 'required|date_format:H:i:s',
+            'appointment_end_time' => 'required|date_format:H:i:s|after:appointment_start_time',
             'patient_first_name' => 'required|string|max:255',
             'patient_last_name' => 'required|string|max:255',
             'patient_email' => 'nullable|email|max:255',
             'patient_phone' => 'required|string|max:15',
-            'kind_of_appointment' => 'required|in:diagnose,treatment'];
+            'kind_of_appointment' => 'required|in:' . implode(',', Appointment::VALID_KINDS)];
     }
 }

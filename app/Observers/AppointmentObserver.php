@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 namespace App\Observers;
-
+// This model modifies the existing available slots for Treatment and Diagnose based on existing Appointments
 use App\Models\Appointment;
 use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
+//use Carbon\Carbon;
 
 class AppointmentObserver
 {
@@ -15,8 +16,13 @@ class AppointmentObserver
     {
         $practitionerId = $appointment->practitioner_id;
         $date = $appointment->appointment_date;
-        $start = $appointment->appointment_start_time;
-        $end = $appointment->appointment_end_time;
+        // We add a 15' buffer to the starting and ending times :
+        $startWithBuffer = $appointment->appointment_start_time->copy()->subMinutes(15);
+        $endWithBuffer = $appointment->appointment_end_time->copy()->addMinutes(15);
+        /*
+        $startWithBuffer = Carbon::parse($appointment->appointment_start_time)->subMinutes(15)->format('H:i:s');
+        $endWithBuffer = Carbon::parse($appointment->appointment_end_time)->addMinutes(15)->format('H:i:s');
+        */
 
         $models = [AvailableTimeSlot::class, AvailableTimeSlotDiagnosis::class];
 
@@ -24,13 +30,13 @@ class AppointmentObserver
             $slots = $model::where('practitioner_id', $practitionerId)
                 ->where('date', $date)
                 ->get();
-
-            $slotsToDelete = $slots->filter(function ($slot) use ($start, $end) {
+            
+            $slotsToDelete = $slots->filter(function ($slot) use ($startWithBuffer, $endWithBuffer) {
                 return (
-                    ($slot->start_time >= $start && $slot->start_time < $end) ||
-                    ($slot->end_time > $start && $slot->end_time <= $end) ||
-                    ($slot->start_time <= $start && $slot->end_time >= $end) ||
-                    ($slot->start_time >= $start && $slot->end_time <= $end)
+                    ($slot->start_time >= $startWithBuffer && $slot->start_time < $endWithBuffer) ||
+                    ($slot->end_time > $startWithBuffer && $slot->end_time <= $endWithBuffer) ||
+                    ($slot->start_time <= $startWithBuffer && $slot->end_time >= $endWithBuffer) //||
+                    //($slot->start_time >= $startWithBuffer && $slot->end_time <= $endWithBuffer)
                 );
             });
 

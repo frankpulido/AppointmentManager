@@ -27,6 +27,7 @@ return new class extends Migration
             $table->enum('kind_of_appointment', Appointment::VALID_KINDS);
             $table->enum('status', Appointment::VALID_STATUSES)->default('scheduled');
             $table->timestamps();
+            $table->index(['practitioner_id', 'appointment_date']);
         });
     }
 
