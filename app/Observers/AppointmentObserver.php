@@ -5,7 +5,9 @@ namespace App\Observers;
 use App\Models\Appointment;
 use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
-//use Carbon\Carbon;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class AppointmentObserver
 {
@@ -17,8 +19,8 @@ class AppointmentObserver
         $practitionerId = $appointment->practitioner_id;
         $date = $appointment->appointment_date;
         // We add a 15' buffer to the starting and ending times :
-        $startWithBuffer = $appointment->appointment_start_time->copy()->subMinutes(15);
-        $endWithBuffer = $appointment->appointment_end_time->copy()->addMinutes(15);
+        $startWithBuffer = Carbon::parse($appointment->appointment_start_time)->subMinutes(15);
+        $endWithBuffer = Carbon::parse($appointment->appointment_end_time)->addMinutes(15);
         /*
         $startWithBuffer = Carbon::parse($appointment->appointment_start_time)->subMinutes(15)->format('H:i:s');
         $endWithBuffer = Carbon::parse($appointment->appointment_end_time)->addMinutes(15)->format('H:i:s');
@@ -27,20 +29,29 @@ class AppointmentObserver
         $models = [AvailableTimeSlot::class, AvailableTimeSlotDiagnosis::class];
 
         foreach ($models as $model) {
-            $slots = $model::where('practitioner_id', $practitionerId)
-                ->where('date', $date)
-                ->get();
-            
-            $slotsToDelete = $slots->filter(function ($slot) use ($startWithBuffer, $endWithBuffer) {
-                return (
-                    ($slot->start_time >= $startWithBuffer && $slot->start_time < $endWithBuffer) ||
-                    ($slot->end_time > $startWithBuffer && $slot->end_time <= $endWithBuffer) ||
-                    ($slot->start_time <= $startWithBuffer && $slot->end_time >= $endWithBuffer) //||
-                    //($slot->start_time >= $startWithBuffer && $slot->end_time <= $endWithBuffer)
-                );
-            });
+            try {
+                $slots = $model::where('practitioner_id', $practitionerId)
+                    ->where('date', $date)
+                    ->get();
+                
+                $slotsToDelete = $slots->filter(function ($slot) use ($startWithBuffer, $endWithBuffer) {
+                    $slotStart = Carbon::parse($slot->start_time);
+                    $slotEnd = Carbon::parse($slot->end_time);
+                    return (
+                        ($slotStart >= $startWithBuffer && $slotStart < $endWithBuffer) ||
+                        ($slotEnd > $startWithBuffer && $slotEnd <= $endWithBuffer) ||
+                        ($slotStart <= $startWithBuffer && $slotEnd >= $endWithBuffer) //||
+                        //($slot->start_time >= $startWithBuffer && $slot->end_time <= $endWithBuffer)
+                    );
+                });
 
-            $model::destroy($slotsToDelete->pluck('id')->all());
+                $model::destroy($slotsToDelete->pluck('id')->all());
+            } catch (Throwable $e) {
+                Log::error('AppointmentObserver failed to remove overlapping slots: ' . $e->getMessage(), [
+                    'appointment_id' => $appointment->id,
+                    'model' => $model,
+                ]);
+            }
         }
     }
 

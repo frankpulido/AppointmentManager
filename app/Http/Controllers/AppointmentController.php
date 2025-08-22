@@ -7,6 +7,7 @@ use App\Http\Requests\StoreAppointmentRequest;
 use App\Models\Appointment;
 use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
+use App\Services\CheckAppointmentOverlapService;
 
 class AppointmentController extends Controller
 {
@@ -18,8 +19,20 @@ class AppointmentController extends Controller
     public function store(StoreAppointmentRequest $request)
     {
         $validated = $request->validated();
+        $overlapService = new CheckAppointmentOverlapService();
         $slot = $this->findSlot($validated);
 
+        // Check for appointment overlap (in case available slot was not removed by AppointmentObserver)
+        if ($overlapService->checkOverlap(
+            $validated['appointment_date'],
+            $validated['appointment_start_time'],
+            $validated['appointment_end_time'],
+            $validated['practitioner_id']
+        )) {
+            return response()->json(['error' => 'Esta hora de visita no esta realmente disponible en el sistema. Agende otra hora o contacte directamente con el profesional de su elección para verificar disponibilidad'], 400);
+        }
+
+        // Check if the requested slot is available
         if (!$slot) {
             return response()->json(['error' => 'Esta hora de visita no esta disponible'], 400);
         } else {

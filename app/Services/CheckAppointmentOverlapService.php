@@ -23,8 +23,6 @@ class CheckAppointmentOverlapService
         $endWithBuffer   = Carbon::parse($end)->addMinutes(15)->format('H:i:s');
 
         // We filter the existing appointments by practitioner and date
-        $
-
         $check1 = Appointment::where('practitioner_id', $practitionerId)
             ->whereDate('appointment_date', $date)
             ->where(function ($query) use ($startWithBuffer, $endWithBuffer) {
