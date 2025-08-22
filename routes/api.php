@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\PractitionerAppointmentController;
 use App\Http\Controllers\AvailableSlotsController;
+use App\Http\Controllers\PractitionerAvailableSlotsController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -16,6 +17,9 @@ Route::get('/diagnose', [AvailableSlotsController::class, 'index90'])->name('dia
 Route::get('/treatment', [AvailableSlotsController::class, 'index60'])->name('treatment.index60');
 
 // Routes for practitioners
+Route::get('/practitioner/available-slots', [PractitionerAvailableSlotsController::class], 'index')->name('practitioner.available-slots.index');
+//Route::get('/practitioner/available-slots/create', [PractitionerAvailableSlotsController::class], 'create')->name('practitioner.available-slots.create');
+Route::post('/practitioner/available-slots', [PractitionerAvailableSlotsController::class], 'store')->name('practitioner.available-slots.store');
 Route::get('/practitioner/appointments', [PractitionerAppointmentController::class, 'index'])->name('practitioner.appointments.index');
 //Route::get('/practitioner/appointments/create', [PractitionerAppointmentController::class, 'create'])->name('practitioner.appointments.create');
 Route::post('/practitioner/appointments', [PractitionerAppointmentController::class, 'store'])->name('practitioner.appointments.store');

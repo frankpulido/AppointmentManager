@@ -3,10 +3,8 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Appointment;
-use Illuminate\Support\Facades\App;
 
-class StoreAppointmentRequest extends FormRequest
+class DeleteAppointmentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +22,8 @@ class StoreAppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'appointment_id' => 'required|exists:appointments,id',
             'practitioner_id' => 'required|exists:practitioners,id',
-            'appointment_date' => 'required|date',
-            'appointment_start_time' => 'required|date_format:H:i:s',
-            'appointment_end_time' => 'required|date_format:H:i:s|after:appointment_start_time',
-            'kind_of_appointment' => 'required|in:' . implode(',', Appointment::VALID_KINDS)
         ];
     }
 }

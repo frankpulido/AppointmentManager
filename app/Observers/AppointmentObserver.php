@@ -31,12 +31,12 @@ class AppointmentObserver
         foreach ($models as $model) {
             try {
                 $slots = $model::where('practitioner_id', $practitionerId)
-                    ->where('date', $date)
+                    ->where('slot_date', $date)
                     ->get();
                 
                 $slotsToDelete = $slots->filter(function ($slot) use ($startWithBuffer, $endWithBuffer) {
-                    $slotStart = Carbon::parse($slot->start_time);
-                    $slotEnd = Carbon::parse($slot->end_time);
+                    $slotStart = Carbon::parse($slot->slot_start_time);
+                    $slotEnd = Carbon::parse($slot->slot_end_time);
                     return (
                         ($slotStart >= $startWithBuffer && $slotStart < $endWithBuffer) ||
                         ($slotEnd > $startWithBuffer && $slotEnd <= $endWithBuffer) ||

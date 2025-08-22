@@ -16,10 +16,10 @@ return new class extends Migration
             $table->foreignId('practitioner_id')->references('id')->on('practitioners')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
-            $table->date('date');
-            $table->time('start_time');
-            $table->time('end_time');
-            $table->index(['practitioner_id', 'date']);
+            $table->date('slot_date');
+            $table->time('slot_start_time');
+            $table->time('slot_end_time');
+            $table->index(['practitioner_id', 'slot_date']);
         });
     }
 

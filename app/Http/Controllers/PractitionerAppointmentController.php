@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Appointment;
 use App\Http\Requests\StoreAppointmentRequest;
+use App\Http\Requests\DeleteAppointmentRequest;
 use App\Services\CheckAppointmentOverlapService;
-use Illuminate\Contracts\Cache\Store;
 
 class PractitionerAppointmentController extends Controller
 {
@@ -61,9 +61,17 @@ class PractitionerAppointmentController extends Controller
         // Logic to update an existing appointment
     }
 
-    public function destroy($id)
+    public function destroy(DeleteAppointmentRequest $request)
     {
-        // Logic to delete an appointment
+        $validated = $request->validated();
+        $appointment = Appointment::where('id', $validated['appointment_id'])
+            ->where('practitioner_id', $validated['practitioner_id'])
+            ->first();
+        if($appointment) {
+            $appointment->delete();
+            return response()->json(['message' => 'La reserva de visita ha sido eliminada con éxito'], 200);
+        }
+        return response()->json(['message' => 'La reserva de visita indicada no existe'], 404);
     }
 
     public function search(Request $request)

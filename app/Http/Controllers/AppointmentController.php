@@ -8,10 +8,12 @@ use App\Models\Appointment;
 use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
 use App\Services\CheckAppointmentOverlapService;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class AppointmentController extends Controller
 {
-   public function create(Request $request)
+    public function create(Request $request)
     {
         // Logic to show form for creating a new appointment
     }
@@ -19,8 +21,38 @@ class AppointmentController extends Controller
     public function store(StoreAppointmentRequest $request)
     {
         $validated = $request->validated();
-        $overlapService = new CheckAppointmentOverlapService();
+        try {
+            $slot = $this->findSlot($validated);
+
+            if (!$slot) {
+                return response()->json(['error' => 'Esta hora de visita no está disponible'], 400);
+            }
+
+            $appointment = new Appointment($validated);
+            $appointment->status = 'scheduled';
+            $appointment->save();
+
+            return response()->json([
+                'message' => 'Su cita ha sido reservada con éxito',
+                'appointment' => $appointment
+            ], 201);
+
+        } catch (Throwable $e) {
+            Log::error('Appointment store failed: ' . $e->getMessage(), [
+                'request' => $validated,
+            ]);
+
+            return response()->json([
+                'error' => 'Ocurrió un error al reservar la cita'
+            ], 500);
+        }
+    }
+    /*
+    public function store(StoreAppointmentRequest $request)
+    {
+        $validated = $request->validated();
         $slot = $this->findSlot($validated);
+        $overlapService = new CheckAppointmentOverlapService();
 
         // Check for appointment overlap (in case available slot was not removed by AppointmentObserver)
         if ($overlapService->checkOverlap(
@@ -47,6 +79,7 @@ class AppointmentController extends Controller
             );
         }        
     }
+    */
     private function findSlot(array $validated)
     {
         $model = $validated['kind_of_appointment'] === 'diagnose'
@@ -54,9 +87,9 @@ class AppointmentController extends Controller
             : AvailableTimeSlot::class;
 
         return $model::where('practitioner_id', $validated['practitioner_id'])
-            ->where('date', $validated['appointment_date'])
-            ->where('start_time', $validated['appointment_start_time'])
-            ->where('end_time', $validated['appointment_end_time'])
+            ->where('slot_date', $validated['appointment_date'])
+            ->where('slot_start_time', $validated['appointment_start_time'])
+            ->where('slot_end_time', $validated['appointment_end_time'])
             ->first();
     }
 }

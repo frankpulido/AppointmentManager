@@ -54,9 +54,9 @@ class AvailableTimeSlotSeeder extends Seeder
                     DB::table('available_time_slots')->updateOrInsert(
                         [
                             'practitioner_id' => $practitioner_id,
-                            'date' => $date,
-                            'start_time' => $startTime,
-                            'end_time' => $endTime,
+                            'slot_date' => $date,
+                            'slot_start_time' => $startTime,
+                            'slot_end_time' => $endTime,
                         ]
                     );
                 }
