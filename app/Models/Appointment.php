@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Observers\AppointmentObserver;
 
@@ -30,24 +29,36 @@ class Appointment extends Model
     ];
 
     protected $casts = [
-        'appointment_date' => 'date',
-        /*
-        'appointment_start_time' => 'time',
-        'appointment_end_time' => 'time',
-        */
+        'appointment_date' => 'date'
     ];
 
-    /*
-    protected function appointmentStartTime() : Attribute
+    protected function patientFirstName(): Attribute
     {
-        return Attribute::make(fn($value) => Carbon::parse($value)->format('H:i'));
+        return Attribute::make(
+            set: fn($value) => strtolower(trim($value))
+        );
     }
 
-    protected function appointmentEndTime() : Attribute
+    protected function patientLastName(): Attribute
     {
-        return Attribute::make(fn($value) => Carbon::parse($value)->format('H:i'));
+        return Attribute::make(
+            set: fn($value) => strtolower(trim($value))
+        );
     }
-    */
+
+    protected function patientEmail(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => strtolower($value)
+        );
+    }
+
+    protected function patientPhone(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => preg_replace('/[\s\-]/', '', $value) // removes spaces and dashes
+        );
+    }
 
     public function practitioner()
     {

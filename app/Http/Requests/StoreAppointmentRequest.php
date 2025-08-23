@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Appointment;
-use Illuminate\Support\Facades\App;
 
 class StoreAppointmentRequest extends FormRequest
 {
@@ -28,7 +27,12 @@ class StoreAppointmentRequest extends FormRequest
             'appointment_date' => 'required|date',
             'appointment_start_time' => 'required|date_format:H:i:s',
             'appointment_end_time' => 'required|date_format:H:i:s|after:appointment_start_time',
-            'kind_of_appointment' => 'required|in:' . implode(',', Appointment::VALID_KINDS)
+            'patient_first_name' => 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
+            'patient_last_name'=> 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
+            'patient_email' => 'email|max:50',
+            'patient_phone'=> 'required|string|max:15|regex:/^\+?[0-9\s\-]+$/',
+            'kind_of_appointment' => 'required|in:' . implode(',', Appointment::VALID_KINDS),
+            'status' => 'in:' . implode(',', Appointment::VALID_STATUSES),
         ];
     }
 }

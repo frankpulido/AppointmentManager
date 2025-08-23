@@ -18,8 +18,11 @@ class AppointmentController extends Controller
         // Logic to show form for creating a new appointment
     }
 
+    /*
     public function store(StoreAppointmentRequest $request)
     {
+        Log::info('Store method reached', $request->all());
+
         $validated = $request->validated();
         try {
             $slot = $this->findSlot($validated);
@@ -47,7 +50,7 @@ class AppointmentController extends Controller
             ], 500);
         }
     }
-    /*
+    */
     public function store(StoreAppointmentRequest $request)
     {
         $validated = $request->validated();
@@ -79,7 +82,7 @@ class AppointmentController extends Controller
             );
         }        
     }
-    */
+    
     private function findSlot(array $validated)
     {
         $model = $validated['kind_of_appointment'] === 'diagnose'
