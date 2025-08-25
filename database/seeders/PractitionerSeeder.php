@@ -18,6 +18,15 @@ class PractitionerSeeder extends Seeder
             'last_name' => 'de las Heras Cuesta',
             'specialization' => 'Osteópata y Fisioterapeuta Deportiva',
             'email' => 'laura@fisioterapiayosteopatiabarcelona.es',
-            'phone' => '677389143',]);
+            'phone' => '677389143'
+        ]);
+
+        Practitioner::create([
+            'first_name' => 'Frank',
+            'last_name' => 'Pulido',
+            'specialization' => 'Osteópata y Fisioterapeuta Deportivo',
+            'email' => 'frank@fisioterapiayosteopatiabarcelona.es',
+            'phone' => '653343353'
+        ]);
     }
 }

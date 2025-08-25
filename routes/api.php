@@ -17,12 +17,13 @@ Route::get('/diagnose', [AvailableSlotsController::class, 'index90'])->name('dia
 Route::get('/treatment', [AvailableSlotsController::class, 'index60'])->name('treatment.index60');
 
 // Routes for practitioners
-Route::get('/practitioner/available-slots', [PractitionerAvailableSlotsController::class], 'index')->name('practitioner.available-slots.index');
-//Route::get('/practitioner/available-slots/create', [PractitionerAvailableSlotsController::class], 'create')->name('practitioner.available-slots.create');
-Route::post('/practitioner/available-slots', [PractitionerAvailableSlotsController::class], 'store')->name('practitioner.available-slots.store');
-Route::get('/practitioner/appointments', [PractitionerAppointmentController::class, 'index'])->name('practitioner.appointments.index');
+Route::get('/practitioner/available-slots/index', [PractitionerAvailableSlotsController::class, 'index'])->name('practitioner.available-slots.index');
+//Route::get('/practitioner/available-slots/create', [PractitionerAvailableSlotsController::class, 'create'])->name('practitioner.available-slots.create');
+Route::post('/practitioner/available-slots/store', [PractitionerAvailableSlotsController::class, 'store'])->name('practitioner.available-slots.store');
+Route::get('/practitioner/appointments/index', [PractitionerAppointmentController::class, 'index'])->name('practitioner.appointments.index');
 //Route::get('/practitioner/appointments/create', [PractitionerAppointmentController::class, 'create'])->name('practitioner.appointments.create');
-Route::post('/practitioner/appointments', [PractitionerAppointmentController::class, 'store'])->name('practitioner.appointments.store');
+Route::post('/practitioner/appointments/store', [PractitionerAppointmentController::class, 'store'])->name('practitioner.appointments.store');
+Route::post('/practitioner/appointments/delete', [PractitionerAppointmentController::class, 'destroy'])->name('practitioner.appointments.destroy');
 //Route::get('/practitioner/appointments/{id}', [PractitionerAppointmentController::class, 'show'])->name('practitioner.appointments.show');
 //Route::get('/practitioner/appointments/{id}/edit', [PractitionerAppointmentController::class, 'edit'])->name('practitioner.appointments.edit');
 //Route::put('/practitioner/appointments/{id}', [PractitionerAppointmentController::class, 'update'])->name('practitioner.appointments.update');

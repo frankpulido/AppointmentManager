@@ -3,6 +3,8 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class DeleteAppointmentRequest extends FormRequest
 {
@@ -22,8 +24,25 @@ class DeleteAppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'appointment_id' => 'required|exists:appointments,id',
             'practitioner_id' => 'required|exists:practitioners,id',
+            'appointment_id' => 'required|exists:appointments,id',
         ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'appointment_id.exists' => 'La reserva de visita indicada no existe',
+            'practitioner_id.exists' => 'El profesional indicado no existe',
+        ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'message' => $validator->errors()->first()
+            ], 404)
+        );
     }
 }

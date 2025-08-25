@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Appointment;
 use App\Http\Requests\StoreAppointmentRequest;
+use App\Http\Requests\SearchAppointmentByDateTimeRequest;
+use App\Http\Requests\SearchAppointmentByPatientNameRequest;
 use App\Http\Requests\DeleteAppointmentRequest;
 use App\Services\CheckAppointmentOverlapService;
 
@@ -64,19 +66,43 @@ class PractitionerAppointmentController extends Controller
     public function destroy(DeleteAppointmentRequest $request)
     {
         $validated = $request->validated();
-        $appointment = Appointment::where('id', $validated['appointment_id'])
-            ->where('practitioner_id', $validated['practitioner_id'])
+        $appointment = Appointment::where('practitioner_id', $validated['practitioner_id'])
+            ->where('id', $validated['appointment_id'])
             ->first();
-        if($appointment) {
-            $appointment->delete();
-            return response()->json(['message' => 'La reserva de visita ha sido eliminada con éxito'], 200);
+        if(!$appointment) {
+            return response()->json(['message' => 'La reserva de visita indicada no existe'], 404);
         }
-        return response()->json(['message' => 'La reserva de visita indicada no existe'], 404);
+        $appointment->delete();
+        return response()->json(['message' => 'La reserva de visita ha sido eliminada con éxito'], 200);
     }
 
-    public function search(Request $request)
+    public function searchAppointmentByDateTime(SearchAppointmentByDateTimeRequest $request)
     {
-        // Logic to search for appointments based on criteria
+        // Logic to search for appointments based on PRACTITIONER and date/time/kind
+        $validated = $request->validated();
+        $appointment = Appointment::where('practitioner_id', $validated['practitioner_id'])
+            ->whereDate('appointment_date', $validated['appointment_date'])
+            ->where('appointment_start_time', $validated['appointment_start_time'])
+            ->where('appointment_end_time', $validated['appointment_end_time'])
+            ->where('kind_of_appointment', $validated['kind_of_appointment'])
+            ->get();
+        return response()->json($appointment, 200);
+    }
+
+    public function searchAppointmentByPatientName(SearchAppointmentByPatientNameRequest $request)
+    {
+        // Logic to search for appointments based on PATIENT NAME
+        $validated = $request->validated;
+        $appointments = Appointment::where('practitioner_id', $validated['practitioner_id'])
+            ->where('patient_first_name', 'LIKE', $validated['patient_first_name'])
+            ->where('patient_last_name', 'LIKE', $validated['patient_last_name'])
+            ->get;
+        return response()->json($appointments, 200);
+    }
+
+    public function searchAppointmentByPatientEmail(Request $request)
+    {
+        // Logic to search for appointments based on PATIENT EMAIL
     }
 
     public function filterByDate(Request $request)
