@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('slot_date');
             $table->time('slot_start_time');
             $table->time('slot_end_time');
+            $table->timestamps();
             $table->index(['practitioner_id', 'slot_date']);
         });
     }

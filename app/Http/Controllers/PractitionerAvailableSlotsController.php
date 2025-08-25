@@ -41,25 +41,34 @@ class PractitionerAvailableSlotsController extends Controller
         // Logic to show form for creating a new available slot
     }
 
-    public function store(StoreAvailableSlotRequest $request)
+    public function store(Request $request) //StoreAvailableSlotRequest
     {
-        $validated = $request->validated();
+        $data = $request->all();
+        //$validated = $request->validated();
         $overlapService = new CheckAppointmentOverlapService();
 
         // Check for appointment overlap
         if ($overlapService->checkOverlap(
+            /*
             $validated['slot_date'],
             $validated['slot_start_time'],
             $validated['slot_end_time'],
             $validated['practitioner_id']
+            */
+            $data['slot_date'],
+            $data['slot_start_time'],
+            $data['slot_end_time'],
+            $data['practitioner_id']
         )) {
             return response()->json(['error' => 'La fecha y hora indicadas se solapan con una cita existente'], 400);
         }
 
-        $newSlotData = collect($validated)->except('kind_of_appointment')->toArray();
+        $newSlotData = collect($data)->except('kind_of_appointment')->toArray();
+        //$newSlotData = collect($validated)->except('kind_of_appointment')->toArray();
 
         // Create new available slot based on kind_of_appointment
-        if ($validated['kind_of_appointment'] === 'diagnose') {
+        if ($data['kind_of_appointment'] === 'diagnose') {
+        //if ($validated['kind_of_appointment'] === 'diagnose') {
             $slot = new AvailableTimeSlotDiagnosis($newSlotData);
         } else {
             $slot = new AvailableTimeSlot($newSlotData);
