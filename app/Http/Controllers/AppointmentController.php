@@ -48,6 +48,7 @@ class AppointmentController extends Controller
         }        
     }
     
+    // Method to allow frontend reservation ONLY is the AvailableTimeSlot exists
     private function findSlot(array $validated)
     {
         $model = $validated['kind_of_appointment'] === 'diagnose'

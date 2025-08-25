@@ -24,8 +24,8 @@ class DeleteAvailableSlotRequest extends FormRequest
     {
         return [
             'kind_of_appointment' => 'required|in:' . implode(',', Appointment::VALID_KINDS),
-            'slot_id' => 'required|integer',
             'practitioner_id' => 'required|exists:practitioners,id',
+            'slot_id' => 'required|integer',
         ];
     }
 }

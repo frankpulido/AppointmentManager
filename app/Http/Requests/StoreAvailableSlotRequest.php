@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Appointment;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreAvailableSlotRequest extends FormRequest
 
@@ -30,5 +32,22 @@ class StoreAvailableSlotRequest extends FormRequest
             'slot_end_time' => 'required|date_format:H:i:s|after:slot_start_time',
             'kind_of_appointment' => 'required|in:' . implode(',', Appointment::VALID_KINDS)
         ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'kind_of_appointment.in' => 'El tipo de visita debe ser "diagnose" o "treatment"',
+            'practitioner_id.exists' => 'El profesional indicado no existe',
+        ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'message' => $validator->errors()->first()
+            ], 404)
+        );
     }
 }

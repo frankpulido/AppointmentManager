@@ -21,7 +21,7 @@ class AvailableSlotsController extends Controller
 
         return response()->json([
             'practitioners' => $practitioners,
-            'availableSlots90Filtered' =>  $availableSlots90Filtered],
+            'available_slots_diagnose' =>  $availableSlots90Filtered],
             200
         );
     }
@@ -38,7 +38,7 @@ class AvailableSlotsController extends Controller
 
         return response()->json([
             'practitioners' => $practitioners,
-            'availableSlots60Filtered' =>  $availableSlots60Filtered],
+            'available_slots_treatment' =>  $availableSlots60Filtered],
             200
         );
     }

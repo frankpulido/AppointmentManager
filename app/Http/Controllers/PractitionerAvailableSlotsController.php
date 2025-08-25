@@ -17,10 +17,25 @@ class PractitionerAvailableSlotsController extends Controller
         $availableSlots60 = AvailableTimeSlot::all(); 
         $availableSlots90 = AvailableTimeSlotDiagnosis::all();
         return response()->json([
-            'treatment_slots' => $availableSlots60,
-            'diagnose_slots' => $availableSlots90
+            'treatment_available_slots' => $availableSlots60,
+            'diagnose_available_slots' => $availableSlots90
         ], 200); 
     }
+
+    public function index60()
+    {
+        // Add sanctum and token, authorized id in route
+        $availableSlots60 = AvailableTimeSlot::all(); 
+        return response()->json(['treatment_available_slots' => $availableSlots60], 200); 
+    }
+
+    public function index90()
+    {
+        // Add sanctum and token, authorized id in route
+        $availableSlots90 = AvailableTimeSlotDiagnosis::all();
+        return response()->json(['diagnose_available_slots' => $availableSlots90], 200);
+    }
+
     public function create() : void
     {
         // Logic to show form for creating a new available slot
@@ -41,11 +56,13 @@ class PractitionerAvailableSlotsController extends Controller
             return response()->json(['error' => 'La fecha y hora indicadas se solapan con una cita existente'], 400);
         }
 
+        $newSlotData = collect($validated)->except('kind_of_appointment')->toArray();
+
         // Create new available slot based on kind_of_appointment
         if ($validated['kind_of_appointment'] === 'diagnose') {
-            $slot = new AvailableTimeSlotDiagnosis($validated);
+            $slot = new AvailableTimeSlotDiagnosis($newSlotData);
         } else {
-            $slot = new AvailableTimeSlot($validated);
+            $slot = new AvailableTimeSlot($newSlotData);
         }
         $slot->save();
 
