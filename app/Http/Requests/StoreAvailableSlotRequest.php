@@ -37,8 +37,16 @@ class StoreAvailableSlotRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'kind_of_appointment.in' => 'El tipo de visita debe ser "diagnose" o "treatment"',
+            'practitioner_id.required' => 'El id del profesional es un campo obligatorio',
             'practitioner_id.exists' => 'El profesional indicado no existe',
+            'slot_date.required' => 'La fecha de la hora de visita es un campo obligatorio',
+            'slot_date.date' => 'La fecha de la hora de visita debe tener un formato de fecha válido (AAAA-MM-DD)',
+            'slot_start_time.required' => 'La hora de inicio de la hora de visita es un campo obligatorio',
+            'slot_start_time.date_format' => 'La hora de inicio de la hora de visita debe tener un formato de hora válido (HH:MM:SS)',
+            'slot_end_time.required' => 'La hora de fin de la hora de visita es un campo obligatorio',
+            'slot_end_time.date_format' => 'La hora de fin de la hora de visita debe tener un formato de hora válido (HH:MM:SS)',
+            'slot_end_time.after' => 'La hora de fin de la hora de visita debe ser posterior a la hora de inicio',
+            'kind_of_appointment.in' => 'El tipo de visita debe ser "diagnose" o "treatment"',
         ];
     }
 

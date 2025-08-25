@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Appointment;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class DeleteAvailableSlotRequest extends FormRequest
 {
@@ -27,5 +29,22 @@ class DeleteAvailableSlotRequest extends FormRequest
             'practitioner_id' => 'required|exists:practitioners,id',
             'slot_id' => 'required|integer',
         ];
+    }
+        public function messages(): array
+    {
+        return [
+            'kind_of_appointment.in' => 'El tipo de visita debe ser "diagnose" o "treatment"',
+            'practitioner_id.exists' => 'El profesional indicado no existe',
+            'slot_id.integer' => 'El id de la hora de visita debe ser un entero'
+        ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'message' => $validator->errors()->first()
+            ], 404)
+        );
     }
 }
