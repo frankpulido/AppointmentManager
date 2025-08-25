@@ -8,8 +8,6 @@ use App\Models\Appointment;
 use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
 use App\Services\CheckAppointmentOverlapService;
-use Illuminate\Support\Facades\Log;
-use Throwable;
 
 class AppointmentController extends Controller
 {
@@ -18,39 +16,6 @@ class AppointmentController extends Controller
         // Logic to show form for creating a new appointment
     }
 
-    /*
-    public function store(StoreAppointmentRequest $request)
-    {
-        Log::info('Store method reached', $request->all());
-
-        $validated = $request->validated();
-        try {
-            $slot = $this->findSlot($validated);
-
-            if (!$slot) {
-                return response()->json(['error' => 'Esta hora de visita no está disponible'], 400);
-            }
-
-            $appointment = new Appointment($validated);
-            $appointment->status = 'scheduled';
-            $appointment->save();
-
-            return response()->json([
-                'message' => 'Su cita ha sido reservada con éxito',
-                'appointment' => $appointment
-            ], 201);
-
-        } catch (Throwable $e) {
-            Log::error('Appointment store failed: ' . $e->getMessage(), [
-                'request' => $validated,
-            ]);
-
-            return response()->json([
-                'error' => 'Ocurrió un error al reservar la cita'
-            ], 500);
-        }
-    }
-    */
     public function store(StoreAppointmentRequest $request)
     {
         $validated = $request->validated();

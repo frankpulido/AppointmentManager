@@ -15,13 +15,9 @@ class AvailableSlotsController extends Controller
         $practitioners = Practitioner::get()->mapWithKeys(function($p) {
             return [$p->id => $p->first_name . ' ' . $p->last_name];
         })->toArray();
-
+        
         $availableSlots90 = AvailableTimeSlotDiagnosis::all();
-        $availableSlots90Filtered = [];
-
-        foreach($availableSlots90 as $slot) {
-            $availableSlots90Filtered[$slot->practitioner_id][] = $slot;
-        }
+        $availableSlots90Filtered = $availableSlots90->groupBy('practitioner_id')->toArray();
 
         return response()->json([
             'practitioners' => $practitioners,
@@ -38,15 +34,11 @@ class AvailableSlotsController extends Controller
         })->toArray();
 
         $availableSlots60 = AvailableTimeSlot::all();
-        $availableSlots60Filtered = [];
-
-        foreach($availableSlots60 as $slot) {
-            $availableSlots60Filtered[$slot->practitioner_id][] = $slot;
-        }
+        $availableSlots60Filtered = $availableSlots60->groupBy('practitioner_id')->toArray();
 
         return response()->json([
             'practitioners' => $practitioners,
-            'availableSlots90Filtered' =>  $availableSlots60Filtered],
+            'availableSlots60Filtered' =>  $availableSlots60Filtered],
             200
         );
     }
