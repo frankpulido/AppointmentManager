@@ -13,7 +13,7 @@ class AvailableTimeSlot extends Model
         'practitioner_id',
         'slot_date',
         'slot_start_time',
-        'slot_end_time',
+        'slot_end_time'
     ];
 
     protected $casts = [

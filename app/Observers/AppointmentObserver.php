@@ -18,13 +18,11 @@ class AppointmentObserver
     {
         $practitionerId = $appointment->practitioner_id;
         $date = $appointment->appointment_date;
+        
         // We add a 15' buffer to the starting and ending times :
-        $startWithBuffer = Carbon::parse($appointment->appointment_start_time)->subMinutes(15);
-        $endWithBuffer = Carbon::parse($appointment->appointment_end_time)->addMinutes(15);
-        /*
-        $startWithBuffer = Carbon::parse($appointment->appointment_start_time)->subMinutes(15)->format('H:i:s');
-        $endWithBuffer = Carbon::parse($appointment->appointment_end_time)->addMinutes(15)->format('H:i:s');
-        */
+        $buffer = Appointment::BUFFER_MINUTES;
+        $startWithBuffer = Carbon::parse($appointment->appointment_start_time)->subMinutes($buffer);
+        $endWithBuffer = Carbon::parse($appointment->appointment_end_time)->addMinutes($buffer);
 
         $models = [AvailableTimeSlot::class, AvailableTimeSlotDiagnosis::class];
 

@@ -51,7 +51,8 @@ class AvailableTimeSlotSeeder extends Seeder
                 }
 
                 foreach ($this->timeSlots as [$startTime, $endTime]) {
-                    DB::table('available_time_slots')->updateOrInsert(
+                    //DB::table('available_time_slots')->updateOrInsert(
+                    AvailableTimeSlot::updateOrCreate(
                         [
                             'practitioner_id' => $practitioner_id,
                             'slot_date' => $date,

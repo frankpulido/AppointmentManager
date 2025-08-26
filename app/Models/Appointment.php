@@ -12,7 +12,10 @@ use App\Observers\AppointmentObserver;
 class Appointment extends Model
 {
     use HasFactory;
-    public const VALID_STATUSES = ['scheduled', 'cancelled', 'no-show', 're-scheduled'];
+    public const BUFFER_MINUTES = 15;
+    public const DURATION_MINUTES_DIAGNOSE = 90;
+    public const DURATION_MINUTES_TREATMENT = 60;
+    public const VALID_STATUSES = ['scheduled', 're-scheduled', 'offered', 'cancelled', 'no-show'];
     public const VALID_KINDS = ['diagnose', 'treatment'];
     protected $table = 'appointments';
     protected $fillable = [

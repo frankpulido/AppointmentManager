@@ -3,11 +3,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Appointment;
 use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
 use App\Http\Requests\StoreAvailableSlotRequest;
 use App\Http\Requests\DeleteAvailableSlotRequest;
 use App\Services\CheckAppointmentOverlapService;
+use Carbon\Carbon;
 
 class PractitionerAvailableSlotsController extends Controller
 {
@@ -57,6 +59,20 @@ class PractitionerAvailableSlotsController extends Controller
     {
         $validated = $request->validated();
         $overlapService = new CheckAppointmentOverlapService();
+
+        // check whether slot_end_time is null and use defaults if so
+        if (is_null($validated['slot_end_time'])) {
+            $buffer = Appointment::DURATION_MINUTES_DIAGNOSE;
+            if ($validated['kind_of_appointment'] === 'diagnose') {
+                $slotDefaultEndTimeDiagnose = Carbon::parse($validated['slot_start_time'])->addMinutes(Appointment::DURATION_MINUTES_DIAGNOSE)->format('H:i:s');
+                $validated['slot_end_time'] = $slotDefaultEndTimeDiagnose;
+            } elseif ($validated['kind_of_appointment'] === 'treatment') {
+                $slotDefaultEndTimeTreatment = Carbon::parse($validated['slot_start_time'])->addMinutes(Appointment::DURATION_MINUTES_TREATMENT)->format('H:i:s');
+                $validated['slot_end_time'] = $$slotDefaultEndTimeTreatment;
+            } else {
+                return response()->json(['error' => 'Tipo de cita no válido'], 400);
+            }
+        }
 
         // Check for appointment overlap
         if ($overlapService->checkOverlap(

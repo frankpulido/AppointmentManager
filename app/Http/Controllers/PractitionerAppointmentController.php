@@ -9,6 +9,7 @@ use App\Http\Requests\SearchAppointmentByDateTimeRequest;
 use App\Http\Requests\SearchAppointmentByPatientNameRequest;
 use App\Http\Requests\DeleteAppointmentRequest;
 use App\Services\CheckAppointmentOverlapService;
+use Carbon\Carbon;
 
 class PractitionerAppointmentController extends Controller
 {
@@ -17,7 +18,9 @@ class PractitionerAppointmentController extends Controller
         // Logic to display appointments
         // Add sanctum and token, authorized id in route
         // Add pagination
-        // changed query() to where('practitioner_id', $user_id)
+        // change query() to where('practitioner_id', $user_id) or
+        // or use middleware to filter by practitioner
+        // or use groupBy('practitioner_id') with an "only" if user is not admin
         $appointments = Appointment::query()
             ->orderBy('appointment_date')
             ->orderBy('appointment_start_time')
@@ -34,6 +37,21 @@ class PractitionerAppointmentController extends Controller
     {
         $validated = $request->validated();
         $overlapService = new CheckAppointmentOverlapService();
+
+        // check whether appointment_end_time is null and use defaults if so
+        if (is_null($validated['appointment_end_time'])) {
+            $buffer = Appointment::DURATION_MINUTES_DIAGNOSE;
+            if ($validated['kind_of_appointment'] === 'diagnose') {
+                $slotDefaultEndTimeDiagnose = Carbon::parse($validated['appointment_start_time'])->addMinutes(Appointment::DURATION_MINUTES_DIAGNOSE)->format('H:i:s');
+                $validated['appointment_end_time'] = $slotDefaultEndTimeDiagnose;
+            } elseif ($validated['kind_of_appointment'] === 'treatment') {
+                $slotDefaultEndTimeTreatment = Carbon::parse($validated['appointment_start_time'])->addMinutes(Appointment::DURATION_MINUTES_TREATMENT)->format('H:i:s');
+                $validated['appointment_end_time'] = $$slotDefaultEndTimeTreatment;
+            } else {
+                return response()->json(['error' => 'Tipo de cita no válido'], 400);
+            }
+        }
+
         // Check for appointment overlap
         if ($overlapService->checkOverlap(
             $validated['appointment_date'],
