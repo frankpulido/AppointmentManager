@@ -14,8 +14,14 @@ class PractitionerAvailableSlotsController extends Controller
     public function index()
     {
         // Add sanctum and token, authorized id in route
-        $availableSlots60 = AvailableTimeSlot::all(); 
-        $availableSlots90 = AvailableTimeSlotDiagnosis::all();
+        $availableSlots60 = AvailableTimeSlot::query()
+            ->orderBy('slot_date')
+            ->orderBy('slot_start_time')
+            ->get(); 
+        $availableSlots90 = AvailableTimeSlotDiagnosis::query()
+            ->orderBy('slot_date')
+            ->orderBy('slot_start_time')
+            ->get();
         return response()->json([
             'treatment_available_slots' => $availableSlots60,
             'diagnose_available_slots' => $availableSlots90
@@ -25,14 +31,20 @@ class PractitionerAvailableSlotsController extends Controller
     public function index60()
     {
         // Add sanctum and token, authorized id in route
-        $availableSlots60 = AvailableTimeSlot::all(); 
+        $availableSlots60 = AvailableTimeSlot::query()
+            ->orderBy('slot_date')
+            ->orderBy('slot_start_time')
+            ->get(); 
         return response()->json(['treatment_available_slots' => $availableSlots60], 200); 
     }
 
     public function index90()
     {
         // Add sanctum and token, authorized id in route
-        $availableSlots90 = AvailableTimeSlotDiagnosis::all();
+        $availableSlots90 = AvailableTimeSlotDiagnosis::query()
+            ->orderBy('slot_date')
+            ->orderBy('slot_start_time')
+            ->get();
         return response()->json(['diagnose_available_slots' => $availableSlots90], 200);
     }
 

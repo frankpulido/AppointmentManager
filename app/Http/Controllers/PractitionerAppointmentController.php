@@ -15,7 +15,13 @@ class PractitionerAppointmentController extends Controller
     public function index()
     {
         // Logic to display appointments
-        $appointments = Appointment::all();
+        // Add sanctum and token, authorized id in route
+        // Add pagination
+        // changed query() to where('practitioner_id', $user_id)
+        $appointments = Appointment::query()
+            ->orderBy('appointment_date')
+            ->orderBy('appointment_start_time')
+            ->get();
         return response()->json($appointments, 200);
     }
 

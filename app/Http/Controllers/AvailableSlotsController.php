@@ -16,8 +16,13 @@ class AvailableSlotsController extends Controller
             return [$p->id => $p->first_name . ' ' . $p->last_name];
         })->toArray();
         
-        $availableSlots90 = AvailableTimeSlotDiagnosis::all();
-        $availableSlots90Filtered = $availableSlots90->groupBy('practitioner_id')->toArray();
+        $availableSlots90 = AvailableTimeSlotDiagnosis::query()
+            ->orderBy('slot_date')
+            ->orderBy('slot_start_time')
+            ->get();
+        $availableSlots90Filtered = $availableSlots90
+            ->groupBy('practitioner_id')
+            ->toArray();
 
         return response()->json([
             'practitioners' => $practitioners,
@@ -33,8 +38,13 @@ class AvailableSlotsController extends Controller
             return [$p->id => $p->first_name . ' ' . $p->last_name];
         })->toArray();
 
-        $availableSlots60 = AvailableTimeSlot::all();
-        $availableSlots60Filtered = $availableSlots60->groupBy('practitioner_id')->toArray();
+        $availableSlots60 = AvailableTimeSlot::query()
+            ->orderBy('slot_date')
+            ->orderBy('slot_start_time')
+            ->get();
+        $availableSlots60Filtered = $availableSlots60
+            ->groupBy('practitioner_id')
+            ->toArray();
 
         return response()->json([
             'practitioners' => $practitioners,
