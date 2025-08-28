@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Vacation;
 use Carbon\CarbonInterface;
 
-class VacationService
+class IsVacationService
 {
     public function isDateInVacation(int $practitionerId, CarbonInterface $date): bool
     {

@@ -23,6 +23,7 @@ class AppointmentController extends Controller
         $overlapService = new CheckAppointmentOverlapService();
 
         // Check for appointment overlap (in case available slot was not removed by AppointmentObserver)
+        // This should not happen in normal operation
         if ($overlapService->checkOverlap(
             $validated['appointment_date'],
             $validated['appointment_start_time'],

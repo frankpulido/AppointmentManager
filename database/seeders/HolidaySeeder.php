@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Holiday;
+use App\Services\IsHolidayService;
 use Illuminate\Support\Facades\DB;
 
 class HolidaySeeder extends Seeder
@@ -15,14 +16,31 @@ class HolidaySeeder extends Seeder
     public function run(): void
     {
         $year = now()->year;
-
+        /*
         $this->seedHolidaysForYear($year);
         $this->seedHolidaysForYear($year + 1);
+        */
+        $holidayService = new IsHolidayService();
+        $holidays1 = $holidayService->holidaysForYear($year);
+        $holidays2 = $holidayService->holidaysForYear($year + 1);
+        $holidays = array_merge($holidays1, $holidays2);
+        
+        foreach ($holidays as $title => $date) {
+            Holiday::UpdateOrCreate(
+                [
+                    'name' => $title,
+                    'date'  => $date,
+                ]
+            );
+        }
+        
+        //DB::table('holidays')->updateOrInsert($holidays);
     }
 
     /**
      * Seeds holidays for a given year.
      */
+    /*
     private function seedHolidaysForYear(int $year): void
     {
         $easter = easter_date($year);
@@ -55,4 +73,5 @@ class HolidaySeeder extends Seeder
             ]);
         }
     }
+    */
 }

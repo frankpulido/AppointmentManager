@@ -40,7 +40,6 @@ class PractitionerAppointmentController extends Controller
 
         // check whether appointment_end_time is null and use defaults if so
         if (is_null($validated['appointment_end_time'])) {
-            $buffer = Appointment::DURATION_MINUTES_DIAGNOSE;
             if ($validated['kind_of_appointment'] === 'diagnose') {
                 $slotDefaultEndTimeDiagnose = Carbon::parse($validated['appointment_start_time'])->addMinutes(Appointment::DURATION_MINUTES_DIAGNOSE)->format('H:i:s');
                 $validated['appointment_end_time'] = $slotDefaultEndTimeDiagnose;

@@ -62,7 +62,6 @@ class PractitionerAvailableSlotsController extends Controller
 
         // check whether slot_end_time is null and use defaults if so
         if (is_null($validated['slot_end_time'])) {
-            $buffer = Appointment::DURATION_MINUTES_DIAGNOSE;
             if ($validated['kind_of_appointment'] === 'diagnose') {
                 $slotDefaultEndTimeDiagnose = Carbon::parse($validated['slot_start_time'])->addMinutes(Appointment::DURATION_MINUTES_DIAGNOSE)->format('H:i:s');
                 $validated['slot_end_time'] = $slotDefaultEndTimeDiagnose;
@@ -74,7 +73,8 @@ class PractitionerAvailableSlotsController extends Controller
             }
         }
 
-        // Check for appointment overlap
+        // Check for appointment overlap (in case available slot was not removed by AppointmentObserver)
+        // This should not happen in normal operation
         if ($overlapService->checkOverlap(
             $validated['slot_date'],
             $validated['slot_start_time'],
