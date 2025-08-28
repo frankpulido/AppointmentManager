@@ -2,9 +2,7 @@
 declare(strict_types=1);
 namespace Database\Seeders;
 
-use App\Models\AvailableTimeSlot;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -24,8 +22,6 @@ class DatabaseSeeder extends Seeder
             WaitingListSeeder::class,
         ]);
         
-        // User::factory(10)->create();
-
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',

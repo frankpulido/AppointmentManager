@@ -2,12 +2,8 @@
 declare(strict_types=1);
 namespace Database\Seeders;
 
-//use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Carbon;
-//use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
-//use App\Models\Holiday;
-//use App\Models\Vacation;
 use App\Models\AvailableTimeSlot;
 use App\Models\Practitioner;
 use App\Services\IsHolidayService;
@@ -30,7 +26,6 @@ class AvailableTimeSlotSeeder extends Seeder
      */
     public function run(): void
     {
-        //$holidays = Holiday::pluck('date')->toArray();
         $practitioners = Practitioner::pluck('id')->toArray();
         $holidayService = new IsHolidayService();
         $vacationService = new IsVacationService();
@@ -42,11 +37,7 @@ class AvailableTimeSlotSeeder extends Seeder
             if ($date->isWeekend()) {
                 continue; // skip Saturday and Sunday
             }
-            /*
-            if (in_array($date, $holidays)) {
-                continue; // skip holidays
-            }
-            */
+
             if ($holidayService->isDateHoliday($date)) {
                 continue; // skip holidays
             }
@@ -57,7 +48,6 @@ class AvailableTimeSlotSeeder extends Seeder
                 }
 
                 foreach ($this->timeSlots as [$startTime, $endTime]) {
-                    //DB::table('available_time_slots')->updateOrInsert(
                     AvailableTimeSlot::updateOrCreate(
                         [
                             'practitioner_id' => $practitioner_id,
