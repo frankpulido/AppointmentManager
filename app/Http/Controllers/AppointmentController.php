@@ -19,9 +19,14 @@ class AppointmentController extends Controller
     public function store(StoreAppointmentRequest $request)
     {
         $validated = $request->validated();
-        $slot = $this->findSlot($validated);
-        $overlapService = new CheckAppointmentOverlapService();
 
+        $slot = $this->findSlot($validated);
+        // Check if the requested slot is available
+        if (!$slot) {
+            return response()->json(['error' => 'Esta hora de visita no esta disponible'], 400);
+        }
+
+        $overlapService = new CheckAppointmentOverlapService();
         // Check for appointment overlap (in case available slot was not removed by AppointmentObserver)
         // This should not happen in normal operation
         if ($overlapService->checkOverlap(
@@ -33,20 +38,16 @@ class AppointmentController extends Controller
             return response()->json(['error' => 'Esta hora de visita no esta realmente disponible en el sistema. Agende otra hora o contacte directamente con el profesional de su elección para verificar disponibilidad'], 400);
         }
 
-        // Check if the requested slot is available
-        if (!$slot) {
-            return response()->json(['error' => 'Esta hora de visita no esta disponible'], 400);
-        } else {
-            $appointment = new Appointment($validated);
-            $appointment->status = 'scheduled';
-            $appointment->save();
+        // If the requested slot is available, create the appointment
+        $appointment = new Appointment($validated);
+        $appointment->status = 'scheduled';
+        $appointment->save();
 
-            return response()->json([
-                'message' => 'Su cita ha sido reservada con éxito',
-                'appointment' => $appointment],
-                201
-            );
-        }        
+        return response()->json([
+            'message' => 'Su cita ha sido reservada con éxito',
+            'appointment' => $appointment],
+            201
+        ); 
     }
     
     // Method to allow frontend reservation ONLY is the AvailableTimeSlot exists
