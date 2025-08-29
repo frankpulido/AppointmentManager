@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Appointment;
 use App\Http\Requests\StoreAppointmentRequest;
+use App\Http\Requests\DeleteAppointmentRequest;
 use App\Http\Requests\SearchAppointmentByDateTimeRequest;
 use App\Http\Requests\SearchAppointmentByPatientNameRequest;
-use App\Http\Requests\DeleteAppointmentRequest;
 use App\Services\CheckAppointmentOverlapService;
+use App\Services\AppointmentCreationService;
+use App\Services\AppointmentDeletionService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PractitionerAppointmentController extends Controller
 {
@@ -58,17 +61,21 @@ class PractitionerAppointmentController extends Controller
             $validated['appointment_end_time'],
             $validated['practitioner_id']
         )) {
-            return response()->json(['error' => 'La fecha y hora de la cita se solapan con una cita existente'], 400);
+            return response()->json(
+                [
+                    'error' => 'La fecha y hora de la cita se solapan con una cita existente'
+                ], 400);
         }
 
         $appointment = new Appointment($validated);
         $appointment->status = 'scheduled';
         $appointment->save();
 
-        return response()->json([
-            'message' => 'La visita ha sido reservada con éxito',
-            'appointment' => $appointment
-        ], 201);
+        return response()->json(
+            [
+                'message' => 'La visita ha sido reservada con éxito',
+                'appointment' => $appointment
+            ], 201);
     }
 
     public function show($id)
@@ -78,12 +85,52 @@ class PractitionerAppointmentController extends Controller
 
     public function edit($id)
     {
-        // Logic to show form for editing an existing appointment
+        // Logic to show form for editing an existing appointment.
+        // Practitioners can only edit patient data, or kind of appointment.
+        // Date and time changes must be done via reschedule method.
+        // Cancellations must be done via cancel method.
+        // No-shows and completion must be done via noShow method.
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, int $appointment_id)
     {
-        // Logic to update an existing appointment
+        // Logic to update an existing appointment : change of customer data and/or kind of appointment only
+        // Fetch old appointment data and abort if not found
+        $appointment = Appointment::find($appointment_id);
+        if (!$appointment) {
+            return response()->json(['message' => 'La reserva de visita indicada no existe'], 404);
+        }
+
+        DB::beginTransaction();
+        try {
+            // Build data for new appointment combining old and new data
+            $newData = [
+                'practitioner_id'      => $appointment->practitioner_id,
+                'appointment_date'     => $appointment->appointment_date,
+                'appointment_start_time' => $appointment->appointment_start_time,
+                'patient_first_name'   => $request->input('patient_first_name'),
+                'patient_last_name'    => $request->input('patient_last_name'),
+                'patient_email'        => $request->input('patient_email'),
+                'patient_phone'        => $request->input('patient_phone'),
+                'kind_of_appointment'  => $request->input('kind_of_appointment'),
+                'status'               => $appointment->status,
+            ];
+
+            // Since we wrapped this part in transaction it is safe to delete old one first and create new one then
+            Appointment::where('id', $appointment->id)->delete();
+            $appointmentCreationService = new AppointmentCreationService();
+            $newAppointment = $appointmentCreationService->create($newData);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'La reserva de visita ha sido actualizada con éxito',
+                'appointment' => $newAppointment,
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy(DeleteAppointmentRequest $request)

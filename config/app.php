@@ -65,7 +65,21 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Display Timezone
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the timezone for displaying dates and times to
+    | the users of your application while keeping UTC storage in the database.
+    | This timezone will be used when formatting dates for display purposes.
+    |
+    */
+
+    'display_timezone' => env('APP_DISPLAY_TIMEZONE', 'UTC'),
+
 
     /*
     |--------------------------------------------------------------------------
