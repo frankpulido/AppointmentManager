@@ -2,12 +2,13 @@
 declare(strict_types=1);
 namespace App\Http\Controllers;
 
+use App\Exceptions\OverlapException;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Models\Appointment;
 use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
-use App\Services\CheckAppointmentOverlapService;
+use App\Services\AppointmentCreationService;
 
 class AppointmentController extends Controller
 {
@@ -26,28 +27,18 @@ class AppointmentController extends Controller
             return response()->json(['error' => 'Esta hora de visita no esta disponible'], 400);
         }
 
-        $overlapService = new CheckAppointmentOverlapService();
-        // Check for appointment overlap (in case available slot was not removed by AppointmentObserver)
-        // This should not happen in normal operation
-        if ($overlapService->checkOverlap(
-            $validated['appointment_date'],
-            $validated['appointment_start_time'],
-            $validated['appointment_end_time'],
-            $validated['practitioner_id']
-        )) {
-            return response()->json(['error' => 'Esta hora de visita no esta realmente disponible en el sistema. Agende otra hora o contacte directamente con el profesional de su elección para verificar disponibilidad'], 400);
+        try {
+            $creationService = new AppointmentCreationService();
+            $appointment = $creationService->create($validated);
+        } catch (OverlapException $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
         }
-
-        // If the requested slot is available, create the appointment
-        $appointment = new Appointment($validated);
-        $appointment->status = 'scheduled';
-        $appointment->save();
 
         return response()->json([
             'message' => 'Su cita ha sido reservada con éxito',
             'appointment' => $appointment],
             201
-        ); 
+        );
     }
     
     // Method to allow frontend reservation ONLY is the AvailableTimeSlot exists
@@ -56,11 +47,16 @@ class AppointmentController extends Controller
         $model = $validated['kind_of_appointment'] === 'diagnose'
             ? AvailableTimeSlotDiagnosis::class
             : AvailableTimeSlot::class;
+        
+        $appointmentEndTime = Appointment::calculateEndTime(
+            $validated['kind_of_appointment'],
+            $validated['appointment_start_time']
+        );
 
         return $model::where('practitioner_id', $validated['practitioner_id'])
             ->where('slot_date', $validated['appointment_date'])
             ->where('slot_start_time', $validated['appointment_start_time'])
-            ->where('slot_end_time', $validated['appointment_end_time'])
+            ->where('slot_end_time', $appointmentEndTime)
             ->first();
     }
 }

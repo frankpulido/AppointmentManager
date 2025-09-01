@@ -1,8 +1,7 @@
 <?php
-
+declare(strict_types=1);
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\AvailableTimeSlotDiagnosis;
 use App\Models\AvailableTimeSlot;
 use App\Models\Practitioner;

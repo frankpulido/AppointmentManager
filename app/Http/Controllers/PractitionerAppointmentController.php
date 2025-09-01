@@ -2,16 +2,16 @@
 declare(strict_types=1);
 namespace App\Http\Controllers;
 
+use App\Exceptions\OverlapException;
 use Illuminate\Http\Request;
 use App\Models\Appointment;
 use App\Http\Requests\StoreAppointmentRequest;
+use App\Http\Requests\UpdateAppointmentDataAndKindRequest;
 use App\Http\Requests\DeleteAppointmentRequest;
 use App\Http\Requests\SearchAppointmentByDateTimeRequest;
 use App\Http\Requests\SearchAppointmentByPatientNameRequest;
-use App\Services\CheckAppointmentOverlapService;
 use App\Services\AppointmentCreationService;
 use App\Services\AppointmentDeletionService;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class PractitionerAppointmentController extends Controller
@@ -39,42 +39,20 @@ class PractitionerAppointmentController extends Controller
     public function store(StoreAppointmentRequest $request)
     {
         $validated = $request->validated();
-        $overlapService = new CheckAppointmentOverlapService();
 
-        // check whether appointment_end_time is null and use defaults if so
-        if (is_null($validated['appointment_end_time'])) {
-            if ($validated['kind_of_appointment'] === 'diagnose') {
-                $slotDefaultEndTimeDiagnose = Carbon::parse($validated['appointment_start_time'])->addMinutes(Appointment::DURATION_MINUTES_DIAGNOSE)->format('H:i:s');
-                $validated['appointment_end_time'] = $slotDefaultEndTimeDiagnose;
-            } elseif ($validated['kind_of_appointment'] === 'treatment') {
-                $slotDefaultEndTimeTreatment = Carbon::parse($validated['appointment_start_time'])->addMinutes(Appointment::DURATION_MINUTES_TREATMENT)->format('H:i:s');
-                $validated['appointment_end_time'] = $$slotDefaultEndTimeTreatment;
-            } else {
-                return response()->json(['error' => 'Tipo de cita no válido'], 400);
-            }
+        // Use AppointmentCreationService to create new appointment
+        // This service also checks for overlap
+        try {
+            $creationService = new AppointmentCreationService();
+            $newAppointment = $creationService->create($validated);
+        } catch (OverlapException $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
         }
-
-        // Check for appointment overlap
-        if ($overlapService->checkOverlap(
-            $validated['appointment_date'],
-            $validated['appointment_start_time'],
-            $validated['appointment_end_time'],
-            $validated['practitioner_id']
-        )) {
-            return response()->json(
-                [
-                    'error' => 'La fecha y hora de la cita se solapan con una cita existente'
-                ], 400);
-        }
-
-        $appointment = new Appointment($validated);
-        $appointment->status = 'scheduled';
-        $appointment->save();
 
         return response()->json(
             [
                 'message' => 'La visita ha sido reservada con éxito',
-                'appointment' => $appointment
+                'appointment' => $newAppointment
             ], 201);
     }
 
@@ -92,8 +70,9 @@ class PractitionerAppointmentController extends Controller
         // No-shows and completion must be done via noShow method.
     }
 
-    public function update(Request $request, int $appointment_id)
+    public function update(UpdateAppointmentDataAndKindRequest $request, int $appointment_id)
     {
+        $validated = $request->validated();
         // Logic to update an existing appointment : change of customer data and/or kind of appointment only
         // Fetch old appointment data and abort if not found
         $appointment = Appointment::find($appointment_id);
@@ -102,35 +81,37 @@ class PractitionerAppointmentController extends Controller
         }
 
         DB::beginTransaction();
-        try {
-            // Build data for new appointment combining old and new data
-            $newData = [
-                'practitioner_id'      => $appointment->practitioner_id,
-                'appointment_date'     => $appointment->appointment_date,
-                'appointment_start_time' => $appointment->appointment_start_time,
-                'patient_first_name'   => $request->input('patient_first_name'),
-                'patient_last_name'    => $request->input('patient_last_name'),
-                'patient_email'        => $request->input('patient_email'),
-                'patient_phone'        => $request->input('patient_phone'),
-                'kind_of_appointment'  => $request->input('kind_of_appointment'),
-                'status'               => $appointment->status,
-            ];
+        // Build data for new appointment combining old and new data
+        $newData = [
+            'practitioner_id'      => $appointment->practitioner_id,
+            'appointment_date'     => $appointment->appointment_date->format('Y-m-d'),
+            'appointment_start_time' => $appointment->appointment_start_time,
+            'appointment_end_time' => null, // We will set it automatically based on kind_of_appointment
+            'patient_first_name'   => $validated['patient_first_name'],
+            'patient_last_name'    => $validated['patient_last_name'],
+            'patient_email'        => $validated['patient_email'] ?? null,
+            'patient_phone'        => $validated['patient_phone'],
+            'kind_of_appointment'  => $validated['kind_of_appointment'],
+            'status'               => $appointment->status,
+        ];
 
-            // Since we wrapped this part in transaction it is safe to delete old one first and create new one then
-            Appointment::where('id', $appointment->id)->delete();
+        // Since we wrapped this part in transaction it is safe to delete old one first and create new one then
+        Appointment::where('id', $appointment->id)->delete();
+
+        try{
             $appointmentCreationService = new AppointmentCreationService();
             $newAppointment = $appointmentCreationService->create($newData);
-
             DB::commit();
-
-            return response()->json([
-                'message' => 'La reserva de visita ha sido actualizada con éxito',
-                'appointment' => $newAppointment,
-            ], 200);
-        } catch (\Exception $e) {
+        } catch (OverlapException $e) {
+            // If overlap detected, we rollback and return error
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 400);
         }
+        
+        return response()->json([
+            'message' => 'La reserva de visita ha sido actualizada con éxito',
+            'appointment' => $newAppointment,
+        ], 200);
     }
 
     public function destroy(DeleteAppointmentRequest $request)

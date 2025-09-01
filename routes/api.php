@@ -28,6 +28,7 @@ Route::get('/practitioner/appointments/index', [PractitionerAppointmentControlle
 //Route::get('/practitioner/appointments/create', [PractitionerAppointmentController::class, 'create'])->name('practitioner.appointments.create');
 Route::post('/practitioner/appointments/store', [PractitionerAppointmentController::class, 'store'])->name('practitioner.appointments.store');
 Route::post('/practitioner/appointments/delete', [PractitionerAppointmentController::class, 'destroy'])->name('practitioner.appointments.destroy');
+Route::post('/practitioner/appointments/update/{id}', [PractitionerAppointmentController::class, 'update'])->name('practitioner.appointments.update');
 //Route::get('/practitioner/appointments/{id}', [PractitionerAppointmentController::class, 'show'])->name('practitioner.appointments.show');
 //Route::get('/practitioner/appointments/{id}/edit', [PractitionerAppointmentController::class, 'edit'])->name('practitioner.appointments.edit');
 //Route::put('/practitioner/appointments/{id}', [PractitionerAppointmentController::class, 'update'])->name('practitioner.appointments.update');

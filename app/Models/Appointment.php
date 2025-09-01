@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Observers\AppointmentObserver;
+use Carbon\Carbon;
 
 #[ObservedBy([AppointmentObserver::class])]
 class Appointment extends Model
@@ -61,6 +62,17 @@ class Appointment extends Model
         return Attribute::make(
             set: fn($value) => preg_replace('/[\s\-]/', '', $value) // removes spaces and dashes
         );
+    }
+
+    public static function calculateEndTime(string $kind, string $startTime): string
+    {
+        $minutes = $kind === 'diagnose'
+            ? self::DURATION_MINUTES_DIAGNOSE
+            : self::DURATION_MINUTES_TREATMENT;
+
+        return Carbon::parse($startTime)
+            ->addMinutes($minutes)
+            ->format('H:i:s');
     }
 
     public function practitioner()
