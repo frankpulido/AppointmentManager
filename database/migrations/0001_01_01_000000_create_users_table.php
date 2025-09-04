@@ -17,6 +17,12 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('role')->default('practitioner');
+            $table->foreignId('practitioner_id')
+                ->nullable()
+                ->constrained('practitioners')
+                ->onUpdate('cascade')
+                ->onDelete('set null');
             $table->rememberToken();
             $table->timestamps();
         });

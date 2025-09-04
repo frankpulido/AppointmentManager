@@ -23,8 +23,19 @@ class DatabaseSeeder extends Seeder
         ]);
         
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'frankpulido',
+            'email' => 'frankpulido@me.com',
+            'password' => 'admin1234',
+            'role' => 'admin',
+            'practitioner_id' => null,
+        ]);
+
+        User::factory()->create([
+            'name' => 'lauradelasheras',
+            'email' => 'laura@fisioterapiayosteopatiabarcelona.es',
+            'password' => 'osteo1234',
+            'role' => 'practitioner',
+            'practitioner_id' => 2, // assuming Laura is the second practitioner in practitioners table
         ]);
     }
 }

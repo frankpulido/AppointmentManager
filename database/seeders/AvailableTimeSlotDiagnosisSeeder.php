@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Database\Seeders;
 
+use App\Models\AvailableTimeSlot;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Seeder;
 use App\Models\AvailableTimeSlotDiagnosis;
@@ -11,7 +12,9 @@ use App\Services\IsVacationService;
 
 class AvailableTimeSlotDiagnosisSeeder extends Seeder
 {
-    private array $timeSlots = [
+    private array $timeSlots = AvailableTimeSlotDiagnosis::DEFAULT_TIME_SLOTS_DIAGNOSIS;
+    /*
+    [
         ['08:30:00', '10:00:00'],
         ['10:30:00', '12:00:00'],
         ['12:30:00', '14:00:00'],
@@ -19,6 +22,7 @@ class AvailableTimeSlotDiagnosisSeeder extends Seeder
         ['17:00:00', '18:30:00'],
         ['19:00:00', '20:30:00'],
     ];
+    */
     /**
      * Run the database seeds.
      */

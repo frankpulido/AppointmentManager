@@ -11,7 +11,8 @@ use App\Services\IsVacationService;
 
 class AvailableTimeSlotSeeder extends Seeder
 {
-    private array $timeSlots = [
+    private array $timeSlots = AvailableTimeSlot::DEFAULT_TIME_SLOTS_TREATMENT;
+    /*[
         ['08:30:00', '09:30:00'],
         ['10:00:00', '11:00:00'],
         ['11:15:00', '12:15:00'],
@@ -21,6 +22,7 @@ class AvailableTimeSlotSeeder extends Seeder
         ['17:30:00', '18:30:00'],
         ['18:45:00', '19:45:00'],
     ];
+    */
     /**
      * Run the database seeds.
      */
