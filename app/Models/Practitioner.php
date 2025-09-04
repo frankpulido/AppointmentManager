@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -26,18 +26,27 @@ class Practitioner extends Model
         'email' => 'string',
         'phone' => 'integer',
     ];
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'practitioner_id');
+    }
+
     public function availableTimeSlots()
     {
         return $this->hasMany(AvailableTimeSlot::class);
     }
+
     public function availableTimeSlotDiagnosis()
     {
         return $this->hasMany(AvailableTimeSlotDiagnosis::class);
     }
+
     public function appointments()
     {
         return $this->hasMany(Appointment::class);
     }
+
     public function vacations()
     {
         return $this->hasMany(Vacation::class);
