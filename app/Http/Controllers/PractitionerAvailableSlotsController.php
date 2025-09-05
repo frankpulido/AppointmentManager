@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Appointment;
+use App\Models\Practitioner;
 use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
 use App\Http\Requests\StoreAvailableSlotRequest;
@@ -15,16 +16,53 @@ class PractitionerAvailableSlotsController extends Controller
 {
     public function index()
     {
-        // Add sanctum and token, authorized id in route
-        $availableSlots60 = AvailableTimeSlot::query()
-            ->orderBy('slot_date')
-            ->orderBy('slot_start_time')
-            ->get(); 
-        $availableSlots90 = AvailableTimeSlotDiagnosis::query()
-            ->orderBy('slot_date')
-            ->orderBy('slot_start_time')
-            ->get();
+        $user = auth('sanctum')->user();
+
+        if ($user->role === 'admin') {
+            
+            $practitioners = Practitioner::get()->mapWithKeys(function($p) {
+                return [$p->id => $p->first_name . ' ' . $p->last_name];
+            })->toArray();
+        
+            $availableSlots60 = AvailableTimeSlot::query()
+                ->orderBy('slot_date')
+                ->orderBy('slot_start_time')
+                ->get()
+                ->groupBy('practitioner_id')
+                ->toArray();
+
+            $availableSlots90 = AvailableTimeSlotDiagnosis::query()
+                ->orderBy('slot_date')
+                ->orderBy('slot_start_time')
+                ->get()
+                ->groupBy('practitioner_id')
+                ->toArray();
+
+        } else {
+
+            $practitioners = Practitioner::where('id', $user->practitioner_id)
+                ->get()
+                ->mapWithKeys(function($p) {
+                    return [$p->id => $p->first_name . ' ' . $p->last_name];
+                })->toArray();
+            
+            $availableSlots60 = AvailableTimeSlot::where('practitioner_id', $user->practitioner_id)
+                ->orderBy('slot_date')
+                ->orderBy('slot_start_time')
+                ->get()
+                ->groupBy('practitioner_id')
+                ->toArray();
+
+            $availableSlots90 = AvailableTimeSlotDiagnosis::where('practitioner_id', $user->practitioner_id)
+                ->orderBy('slot_date')
+                ->orderBy('slot_start_time')
+                ->get()
+                ->groupBy('practitioner_id')
+                ->toArray();
+        }
+
         return response()->json([
+            'practitioners' => $practitioners,
             'treatment_available_slots' => $availableSlots60,
             'diagnose_available_slots' => $availableSlots90
         ], 200); 
@@ -32,22 +70,81 @@ class PractitionerAvailableSlotsController extends Controller
 
     public function index60()
     {
-        // Add sanctum and token, authorized id in route
-        $availableSlots60 = AvailableTimeSlot::query()
-            ->orderBy('slot_date')
-            ->orderBy('slot_start_time')
-            ->get(); 
-        return response()->json(['treatment_available_slots' => $availableSlots60], 200); 
+        $user = auth('sanctum')->user();
+
+        if ($user->role === 'admin') {
+
+            $practitioners = Practitioner::get()->mapWithKeys(function($p) {
+                return [$p->id => $p->first_name . ' ' . $p->last_name];
+            })->toArray();
+        
+            $availableSlots60 = AvailableTimeSlot::query()
+                ->orderBy('slot_date')
+                ->orderBy('slot_start_time')
+                ->get()
+                ->groupBy('practitioner_id')
+                ->toArray();
+
+        } else {
+
+            $practitioners = Practitioner::where('id', $user->practitioner_id)
+                ->get()
+                ->mapWithKeys(function($p) {
+                    return [$p->id => $p->first_name . ' ' . $p->last_name];
+                })->toArray();
+            
+            $availableSlots60 = AvailableTimeSlot::where('practitioner_id', $user->practitioner_id)
+                ->orderBy('slot_date')
+                ->orderBy('slot_start_time')
+                ->get()
+                ->groupBy('practitioner_id')
+                ->toArray();
+        }
+
+        return response()->json([
+            'practitioners' => $practitioners,
+            'treatment_available_slots' => $availableSlots60,
+        ], 200); 
     }
+
 
     public function index90()
     {
-        // Add sanctum and token, authorized id in route
-        $availableSlots90 = AvailableTimeSlotDiagnosis::query()
-            ->orderBy('slot_date')
-            ->orderBy('slot_start_time')
-            ->get();
-        return response()->json(['diagnose_available_slots' => $availableSlots90], 200);
+        $user = auth('sanctum')->user();
+
+        if ($user->role === 'admin') {
+
+            $practitioners = Practitioner::get()->mapWithKeys(function($p) {
+                return [$p->id => $p->first_name . ' ' . $p->last_name];
+            })->toArray();
+
+            $availableSlots90 = AvailableTimeSlotDiagnosis::query()
+                ->orderBy('slot_date')
+                ->orderBy('slot_start_time')
+                ->get()
+                ->groupBy('practitioner_id')
+                ->toArray();
+
+        } else {
+
+            $practitioners = Practitioner::where('id', $user->practitioner_id)
+                ->get()
+                ->mapWithKeys(function($p) {
+                    return [$p->id => $p->first_name . ' ' . $p->last_name];
+                })->toArray();
+            
+            $availableSlots90 = AvailableTimeSlotDiagnosis::where('practitioner_id', $user->practitioner_id)
+                ->orderBy('slot_date')
+                ->orderBy('slot_start_time')
+                ->get()
+                ->groupBy('practitioner_id')
+                ->toArray();
+        }
+
+        return response()->json([
+            'practitioners' => $practitioners,
+            'diagnose_available_slots' => $availableSlots90
+        ], 200); 
     }
 
     public function create() : void
