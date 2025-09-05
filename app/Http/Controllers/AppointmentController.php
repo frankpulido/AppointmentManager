@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\OverlapException;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreAppointmentRequest;
+use App\Http\Requests\StoreAppointmentWebRequest;
 use App\Models\Appointment;
 use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
@@ -17,7 +17,7 @@ class AppointmentController extends Controller
         // Logic to show form for creating a new appointment
     }
 
-    public function store(StoreAppointmentRequest $request)
+    public function store(StoreAppointmentWebRequest $request)
     {
         $validated = $request->validated();
 

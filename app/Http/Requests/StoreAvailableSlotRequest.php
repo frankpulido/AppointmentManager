@@ -15,7 +15,14 @@ class StoreAvailableSlotRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $user = auth('sanctum')->user();
+        // Admin can create appointments for anyone
+        if ($user->role === 'admin') {
+            return true;
+        }
+        
+        // Practitioners can only create appointments for themselves
+        return $user->role === 'practitioner' && $user->practitioner_id === $this->input('practitioner_id');
     }
 
     /**

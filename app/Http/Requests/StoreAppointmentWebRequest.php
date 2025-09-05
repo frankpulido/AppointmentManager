@@ -7,21 +7,14 @@ use App\Models\Appointment;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateAppointmentDataAndKindRequest extends FormRequest
+class StoreAppointmentWebRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $user = auth('sanctum')->user();
-        // Admin can create appointments for anyone
-        if ($user->role === 'admin') {
-            return true;
-        }
-        
-        // Practitioners can only create appointments for themselves
-        return $user->role === 'practitioner' && $user->practitioner_id === $this->input('practitioner_id');
+        return true;
     }
 
     /**
@@ -32,16 +25,31 @@ class UpdateAppointmentDataAndKindRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'practitioner_id' => 'required|exists:practitioners,id',
+            'appointment_date' => 'required|date',
+            'appointment_start_time' => 'required|date_format:H:i:s',
+            //'appointment_end_time' => 'required|date_format:H:i:s|after:appointment_start_time',
             'patient_first_name' => 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
             'patient_last_name'=> 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
             'patient_email' => 'email|max:50',
             'patient_phone'=> 'required|string|max:15|regex:/^\+?[0-9\s\-]+$/',
             'kind_of_appointment' => 'required|in:' . implode(',', Appointment::VALID_KINDS),
+            'status' => 'in:' . implode(',', Appointment::VALID_STATUSES),
         ];
     }
+
     public function messages(): array
     {
         return [
+            'practitioner_id.required' => 'El id del profesional es un campo obligatorio',
+            'practitioner_id.exists' => 'El profesional indicado no existe',
+            'appointment_date.required' => 'La fecha de la cita es un campo obligatorio',
+            'appointment_date.date' => 'La fecha de la cita debe tener un formato de fecha valido (AAAA-MM-DD)',
+            'appointment_start_time.required' => 'La hora de inicio de la cita es un campo obligatorio',
+            'appointment_start_time.date_format' => 'La hora de inicio de la cita debe tener un formato de hora valido (HH:MM:SS)',
+            //'appointment_end_time.required' => 'La hora de fin de la cita es un campo obligatorio',
+            //'appointment_end_time.date_format' => 'La hora de fin de la cita debe tener un formato de hora valido (HH:MM:SS)',
+            //'appointment_end_time.after' => 'La hora de fin de la cita debe ser posterior a la hora de inicio',
             'patient_first_name.required' => 'El nombre del paciente es un campo obligatorio',
             'patient_first_name.string' => 'El nombre del paciente debe ser una cadena de texto',
             'patient_first_name.max' => 'El nombre del paciente debe tener un máximo de 30 caracteres',
@@ -58,6 +66,7 @@ class UpdateAppointmentDataAndKindRequest extends FormRequest
             'patient_phone.regex' => 'El teléfono del paciente debe contener solo números, espacios, guiones y puede empezar con un +',
             'kind_of_appointment.required' => 'El tipo de visita es un campo obligatorio',
             'kind_of_appointment.in' => 'El tipo de visita debe ser "diagnose" o "treatment"',
+            'status.in' => 'El estado de la cita debe ser "scheduled", "canceled", "no-show" o "re-scheduled"',
         ];
     }
 

@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\Exceptions\OverlapException;
 use Illuminate\Http\Request;
 use App\Models\Appointment;
+use App\Models\Practitioner;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentDataAndKindRequest;
 use App\Http\Requests\DeleteAppointmentRequest;
 use App\Http\Requests\SearchAppointmentByDateTimeRequest;
 use App\Http\Requests\SearchAppointmentByPatientNameRequest;
 use App\Services\AppointmentCreationService;
-use App\Services\AppointmentDeletionService;
 use Illuminate\Support\Facades\DB;
 
 class PractitionerAppointmentController extends Controller
@@ -19,16 +19,40 @@ class PractitionerAppointmentController extends Controller
     public function index()
     {
         // Logic to display appointments
-        // Add sanctum and token, authorized id in route
-        // Add pagination
-        // change query() to where('practitioner_id', $user_id) or
-        // or use middleware to filter by practitioner
-        // or use groupBy('practitioner_id') with an "only" if user is not admin
-        $appointments = Appointment::query()
-            ->orderBy('appointment_date')
-            ->orderBy('appointment_start_time')
-            ->get();
-        return response()->json($appointments, 200);
+        // Add pagination later if needed
+        // Admin can see all appointments, practitioners only their own
+        $user = auth('sanctum')->user();
+
+        if ($user->role === 'admin') {
+            $practitioners = Practitioner::get()->mapWithKeys(function($p) {
+                return [$p->id => $p->first_name . ' ' . $p->last_name];
+            })->toArray();
+
+            $appointments = Appointment::query()
+                ->orderBy('appointment_date')
+                ->orderBy('appointment_start_time')
+                ->get()
+                ->groupBy('practitioner_id')
+                ->toArray();
+        } else {
+            $practitioners = Practitioner::where('id', $user->practitioner_id)
+                ->get()
+                ->mapWithKeys(function($p) {
+                    return [$p->id => $p->first_name . ' ' . $p->last_name];
+                })->toArray();
+
+            $appointments = Appointment::where('practitioner_id', $user->practitioner_id)
+                ->orderBy('appointment_date')
+                ->orderBy('appointment_start_time')
+                ->get()
+                ->groupBy('practitioner_id')
+                ->toArray();
+        }
+
+        return response()->json([
+            'practitioners' => $practitioners,
+            'appointments' => $appointments],
+            200);
     }
 
     public function create(Request $request)
@@ -59,6 +83,15 @@ class PractitionerAppointmentController extends Controller
     public function show($id)
     {
         // Logic to display a specific appointment
+        $user = auth('sanctum')->user();
+        $appointment = Appointment::findOrFail($id);
+        
+        // Admin can see any appointment, practitioner only their own
+        if ($user->role !== 'admin' && $user->practitioner_id !== $appointment->practitioner_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        
+        return response()->json($appointment, 200);
     }
 
     public function edit($id)
