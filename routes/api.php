@@ -30,7 +30,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/practitioner/appointments/store', [PractitionerAppointmentController::class, 'store'])->name('practitioner.appointments.store');
     Route::post('/practitioner/appointments/delete', [PractitionerAppointmentController::class, 'destroy'])->name('practitioner.appointments.destroy');
     Route::post('/practitioner/appointments/update/{id}', [PractitionerAppointmentController::class, 'update'])->name('practitioner.appointments.update');
-    //Route::get('/practitioner/appointments/{id}', [PractitionerAppointmentController::class, 'show'])->name('practitioner.appointments.show');
+    Route::get('/practitioner/appointments/{id}', [PractitionerAppointmentController::class, 'show'])->name('practitioner.appointments.show');
     //Route::get('/practitioner/appointments/{id}/edit', [PractitionerAppointmentController::class, 'edit'])->name('practitioner.appointments.edit');
     //Route::put('/practitioner/appointments/{id}', [PractitionerAppointmentController::class, 'update'])->name('practitioner.appointments.update');
     //Route::delete('/practitioner/appointments/{id}', [PractitionerAppointmentController::class, 'destroy'])->name('practitioner.appointments.destroy');
