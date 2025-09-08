@@ -30,10 +30,12 @@ class Appointment extends Model
         'patient_phone',
         'kind_of_appointment',
         'status',
+        'on_line',
     ];
 
     protected $casts = [
-        'appointment_date' => 'date'
+        'appointment_date' => 'date',
+        'on_line' => 'boolean',
     ];
 
     protected function patientFirstName(): Attribute

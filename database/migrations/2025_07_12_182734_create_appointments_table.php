@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('patient_phone');
             $table->enum('kind_of_appointment', Appointment::VALID_KINDS);
             $table->enum('status', Appointment::VALID_STATUSES)->default('scheduled');
+            $table->boolean('on_line')->default(false);
             $table->timestamps();
             $table->index(['practitioner_id', 'appointment_date']);
         });

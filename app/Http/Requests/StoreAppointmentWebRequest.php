@@ -18,6 +18,17 @@ class StoreAppointmentWebRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     *
+     * This method is called before the validation rules are applied.
+     * Here, we set the 'on_line' field to true.
+     */ 
+    protected function prepareForValidation()
+    {
+        $this->merge(['on_line' => true]);
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -35,6 +46,7 @@ class StoreAppointmentWebRequest extends FormRequest
             'patient_phone'=> 'required|string|max:15|regex:/^\+?[0-9\s\-]+$/',
             'kind_of_appointment' => 'required|in:' . implode(',', Appointment::VALID_KINDS),
             'status' => 'in:' . implode(',', Appointment::VALID_STATUSES),
+            'on_line' => 'boolean',
         ];
     }
 
