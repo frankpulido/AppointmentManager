@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PractitionerAppointmentController;
 use App\Http\Controllers\AvailableSlotsController;
 use App\Http\Controllers\PractitionerAvailableSlotsController;
@@ -10,6 +11,9 @@ use App\Http\Controllers\PractitionerAvailableSlotsController;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+// Authentication routes
+Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 
 // Routes for website users
 Route::post('/schedule', [AppointmentController::class, 'store'])->name('schedule.store');

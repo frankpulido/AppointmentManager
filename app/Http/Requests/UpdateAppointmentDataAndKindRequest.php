@@ -19,9 +19,17 @@ class UpdateAppointmentDataAndKindRequest extends FormRequest
         if ($user->role === 'admin') {
             return true;
         }
+
+        // Get appointment_id from route parameter
+        $appointment_id = $this->route('id');
+        $appointment = Appointment::find($appointment_id);
+        
+        if (!$appointment) {
+            return false;
+        }
         
         // Practitioners can only create appointments for themselves
-        return $user->role === 'practitioner' && $user->practitioner_id === $this->input('practitioner_id');
+        return $user->role === 'practitioner' && $user->practitioner_id === $appointment->practitioner_id;
     }
 
     /**
