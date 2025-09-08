@@ -56,6 +56,15 @@ class StoreAvailableSlotRequest extends FormRequest
         ];
     }
 
+    protected function failedAuthorization()
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'message' => 'No autorizado para realizar esta acción'
+            ], 403)
+        );
+    }
+
     public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(

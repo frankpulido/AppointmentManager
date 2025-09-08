@@ -26,7 +26,7 @@ class StoreAppointmentWebRequest extends FormRequest
     {
         return [
             'practitioner_id' => 'required|exists:practitioners,id',
-            'appointment_date' => 'required|date',
+            'appointment_date' => 'required|date|date_format:Y-m-d|after:today',
             'appointment_start_time' => 'required|date_format:H:i:s',
             //'appointment_end_time' => 'required|date_format:H:i:s|after:appointment_start_time',
             'patient_first_name' => 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
@@ -45,6 +45,7 @@ class StoreAppointmentWebRequest extends FormRequest
             'practitioner_id.exists' => 'El profesional indicado no existe',
             'appointment_date.required' => 'La fecha de la cita es un campo obligatorio',
             'appointment_date.date' => 'La fecha de la cita debe tener un formato de fecha valido (AAAA-MM-DD)',
+            'appointment_date.after' => 'La fecha de la cita debe ser posterior a la fecha actual',
             'appointment_start_time.required' => 'La hora de inicio de la cita es un campo obligatorio',
             'appointment_start_time.date_format' => 'La hora de inicio de la cita debe tener un formato de hora valido (HH:MM:SS)',
             //'appointment_end_time.required' => 'La hora de fin de la cita es un campo obligatorio',
