@@ -117,6 +117,7 @@ class AvailableTimeSlotSeederService
     {
         $holidayService = new IsHolidayService();
         $vacationService = new IsVacationService();
+        $ppointmentOverlapService = new CheckAppointmentOverlapService();
         $start = Carbon::parse($start_date);
         $end = $end_date ? Carbon::parse($end_date) : $start;
 
@@ -128,6 +129,10 @@ class AvailableTimeSlotSeederService
             }
 
             foreach ($timeSlots as [$startTime, $endTime]) {
+                // Check for overlapping appointments before creating the slot
+                if ($ppointmentOverlapService->checkOverlap($date->toDateString(), $startTime, $endTime, $practitioner_id)) {
+                    continue; // Skip this slot
+                }
                 $modelClass::updateOrCreate([
                     'practitioner_id' => $practitioner_id,
                     'slot_date' => $date,
