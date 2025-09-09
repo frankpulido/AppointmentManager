@@ -9,8 +9,11 @@ use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
 use App\Http\Requests\StoreAvailableSlotRequest;
 use App\Http\Requests\DeleteAvailableSlotRequest;
+use App\Http\Requests\SeedAvailableSlotsRequest;
 use App\Services\CheckAppointmentOverlapService;
+use App\Services\AvailableTimeSlotSeederService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class PractitionerAvailableSlotsController extends Controller
 {
@@ -219,5 +222,19 @@ class PractitionerAvailableSlotsController extends Controller
             return response()->json(['message' => 'La hora disponible de visita ha sido eliminada con éxito'], 200);
         }
         return response()->json(['message' => 'La hora disponible de visita indicada no existe'], 404);
+    }
+
+    public function seed(SeedAvailableSlotsRequest $request)
+    {
+        $validated = $request->validated();
+        $practitioner_id = $validated['practitioner_id'];
+        $start_date = $validated['slots_start_date'];
+        $end_date = $validated['slots_end_date'] ?? null;
+
+        $seederService = new AvailableTimeSlotSeederService();
+        $seederService->seedTreatment($practitioner_id, $start_date, $end_date);
+        $seederService->seedDiagnosis($practitioner_id, $start_date, $end_date);
+
+        return response()->json(['message' => 'Las horas disponibles de visita han sido generadas con éxito'], 201);
     }
 }

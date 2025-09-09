@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -32,6 +33,14 @@ class AvailableTimeSlot extends Model
     protected $casts = [
         'slot_date' => 'date',
     ];
+
+    public static function calculatedEndTime(string $startTime): string
+    {
+        $minutes = Appointment::DURATION_MINUTES_TREATMENT;
+        return Carbon::parse($startTime)
+            ->addMinutes($minutes)
+            ->format('H:i:s');
+    }
 
     public function practitioner()
     {

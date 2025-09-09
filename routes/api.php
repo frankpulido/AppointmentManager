@@ -28,7 +28,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //Route::get('/practitioner/available-slots/create', [PractitionerAvailableSlotsController::class, 'create'])->name('practitioner.available-slots.create');
     Route::post('/practitioner/available-slots/store', [PractitionerAvailableSlotsController::class, 'store'])->name('practitioner.available-slots.store');
     Route::post('/practitioner/available-slots/delete', [PractitionerAvailableSlotsController::class, 'destroy'])->name('practitioner.available-slots.destroy');
-
+    Route::post('/practitioner/available-slots/seed', [PractitionerAvailableSlotsController::class, 'seed'])->name('practitioner.available-slots.seed');
     Route::get('/practitioner/appointments/index', [PractitionerAppointmentController::class, 'index'])->name('practitioner.appointments.index');
     //Route::get('/practitioner/appointments/create', [PractitionerAppointmentController::class, 'create'])->name('practitioner.appointments.create');
     Route::post('/practitioner/appointments/store', [PractitionerAppointmentController::class, 'store'])->name('practitioner.appointments.store');

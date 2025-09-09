@@ -24,40 +24,6 @@ class AvailableTimeSlotSeederService
     public function seedTreatment(int $practitioner_id, string $start_date, ?string $end_date = null)
     {
         $this->seedSlots($practitioner_id, $start_date, $end_date, $this->timeSlotsTreatment, AvailableTimeSlot::class);
-        /*
-        $holidayService = new IsHolidayService();
-        $vacationService = new IsVacationService();
-        $start = Carbon::parse($start_date);
-        if ($end_date === null) {
-            $end_date = $start_date;
-        }
-        $end = Carbon::parse($end_date);
-
-        for ($date = $start; $date->lte($end); $date->addDay()) {
-            if ($date->isWeekend()) {
-                continue; // skip Saturday and Sunday
-            }
-
-            if ($holidayService->isDateHoliday($date)) {
-                continue; // skip holidays
-            }
-
-            if ($vacationService->isDateInVacation($practitioner_id, $date)) {
-                continue; // skip vacation days
-            }
-
-            foreach ($this->timeSlotsTreatment as [$startTime, $endTime]) {
-                AvailableTimeSlot::updateOrCreate(
-                    [
-                        'practitioner_id' => $practitioner_id,
-                        'slot_date' => $date,
-                        'slot_start_time' => $startTime,
-                        'slot_end_time' => $endTime,
-                    ]
-                );
-            }
-        }
-        */
     }
 
     /**
@@ -71,40 +37,6 @@ class AvailableTimeSlotSeederService
     public function seedDiagnosis(int $practitioner_id, string $start_date, ?string $end_date = null)
     {
         $this->seedSlots($practitioner_id, $start_date, $end_date, $this->timeSlotsDiagnosis, AvailableTimeSlotDiagnosis::class);
-        /*
-        $holidayService = new IsHolidayService();
-        $vacationService = new IsVacationService();
-        $start = Carbon::parse($start_date);
-        if ($end_date === null) {
-            $end_date = $start_date;
-        }
-        $end = Carbon::parse($end_date);
-
-        for ($date = $start; $date->lte($end); $date->addDay()) {
-            if ($date->isWeekend()) {
-                continue; // skip Saturday and Sunday
-            }
-
-            if ($holidayService->isDateHoliday($date)) {
-                continue; // skip holidays
-            }
-
-            if ($vacationService->isDateInVacation($practitioner_id, $date)) {
-                continue; // skip vacation days
-            }
-
-            foreach ($this->timeSlotsDiagnosis as [$startTime, $endTime]) {
-                AvailableTimeSlotDiagnosis::updateOrCreate(
-                    [
-                        'practitioner_id' => $practitioner_id,
-                        'slot_date' => $date,
-                        'slot_start_time' => $startTime,
-                        'slot_end_time' => $endTime,
-                    ]
-                );
-            }
-        }
-        */
     }
 
     private function seedSlots(
