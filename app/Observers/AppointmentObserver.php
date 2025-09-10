@@ -6,6 +6,8 @@ use App\Models\Appointment;
 use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
 use Carbon\Carbon;
+use App\Jobs\RegenerateTreatmentSlotsJsonJob;
+use App\Jobs\RegenerateDiagnosisSlotsJsonJob;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -44,12 +46,22 @@ class AppointmentObserver
                 });
 
                 $model::destroy($slotsToDelete->pluck('id')->all());
+                
             } catch (Throwable $e) {
                 Log::error('AppointmentObserver failed to remove overlapping slots: ' . $e->getMessage(), [
                     'appointment_id' => $appointment->id,
                     'model' => $model,
                 ]);
             }
+        }
+        // Dispatch jobs to regenerate JSON files
+        try {
+            RegenerateTreatmentSlotsJsonJob::dispatch()->onQueue('json-generation');
+            RegenerateDiagnosisSlotsJsonJob::dispatch()->onQueue('json-generation');
+        } catch (Throwable $e) {
+            Log::error('Failed to dispatch slot JSON regeneration jobs: ' . $e->getMessage(), [
+                'appointment_id' => $appointment->id,
+            ]);
         }
     }
 

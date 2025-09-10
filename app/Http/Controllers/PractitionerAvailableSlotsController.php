@@ -12,8 +12,11 @@ use App\Http\Requests\DeleteAvailableSlotRequest;
 use App\Http\Requests\SeedAvailableSlotsRequest;
 use App\Services\CheckAppointmentOverlapService;
 use App\Services\AvailableTimeSlotSeederService;
+use App\Jobs\RegenerateTreatmentSlotsJsonJob;
+use App\Jobs\RegenerateDiagnosisSlotsJsonJob;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class PractitionerAvailableSlotsController extends Controller
 {
@@ -158,6 +161,7 @@ class PractitionerAvailableSlotsController extends Controller
     public function store(StoreAvailableSlotRequest $request) //Request instead of StoreAvailableSlotRequest to debug
     {
         $validated = $request->validated();
+        $practitioner_id = $validated['practitioner_id'];
         $overlapService = new CheckAppointmentOverlapService();
 
         // check whether slot_end_time is null and use defaults if so
@@ -167,7 +171,7 @@ class PractitionerAvailableSlotsController extends Controller
                 $validated['slot_end_time'] = $slotDefaultEndTimeDiagnose;
             } elseif ($validated['kind_of_appointment'] === 'treatment') {
                 $slotDefaultEndTimeTreatment = Carbon::parse($validated['slot_start_time'])->addMinutes(Appointment::DURATION_MINUTES_TREATMENT)->format('H:i:s');
-                $validated['slot_end_time'] = $$slotDefaultEndTimeTreatment;
+                $validated['slot_end_time'] = $slotDefaultEndTimeTreatment;
             } else {
                 return response()->json(['error' => 'Tipo de cita no válido'], 400);
             }
@@ -194,6 +198,19 @@ class PractitionerAvailableSlotsController extends Controller
         }
         $slot->save();
 
+        // Dispatch job to regenerate the appropriate JSON file
+        try {
+            if ($validated['kind_of_appointment'] === 'treatment') {
+                RegenerateTreatmentSlotsJsonJob::dispatch()->onQueue('json-generation');
+            } elseif ($validated['kind_of_appointment'] === 'diagnose') {
+                RegenerateDiagnosisSlotsJsonJob::dispatch()->onQueue('json-generation');
+            }
+        } catch (Throwable $e) {
+            Log::error('Failed to dispatch slot JSON regeneration jobs: ' . $e->getMessage(), [
+                'practitioner_id' => $practitioner_id,
+            ]);
+        }
+
         return response()->json([
             'message' => 'La hora disponible de visita ha sido creada con éxito',
             'slot' => $slot
@@ -203,6 +220,7 @@ class PractitionerAvailableSlotsController extends Controller
     public function destroy(DeleteAvailableSlotRequest $request)
     {
         $validated = $request->validated();
+        $practitioner_id = $validated['practitioner_id'];
         $slot = null;
 
         if ($validated['kind_of_appointment'] === 'diagnose') {
@@ -215,6 +233,21 @@ class PractitionerAvailableSlotsController extends Controller
             $slot = AvailableTimeSlot::where('id', $validated['slot_id'])
                 ->where('practitioner_id', $validated['practitioner_id'])
                 ->first();
+        }
+
+        // Dispatch job to regenerate the appropriate JSON file
+        if($slot) {
+            try {
+                if ($validated['kind_of_appointment'] === 'treatment') {
+                    RegenerateTreatmentSlotsJsonJob::dispatch()->onQueue('json-generation');
+                } elseif ($validated['kind_of_appointment'] === 'diagnose') {
+                    RegenerateDiagnosisSlotsJsonJob::dispatch()->onQueue('json-generation');
+                }
+            } catch (Throwable $e) {
+                Log::error('Failed to dispatch slot JSON regeneration jobs: ' . $e->getMessage(), [
+                    'practitioner_id' => $practitioner_id,
+                ]);
+            }
         }
         
         if($slot) {
@@ -234,6 +267,16 @@ class PractitionerAvailableSlotsController extends Controller
         $seederService = new AvailableTimeSlotSeederService();
         $seederService->seedTreatment($practitioner_id, $start_date, $end_date);
         $seederService->seedDiagnosis($practitioner_id, $start_date, $end_date);
+
+        // Dispatch jobs to regenerate JSON files
+        try {
+            RegenerateTreatmentSlotsJsonJob::dispatch()->onQueue('json-generation');
+            RegenerateDiagnosisSlotsJsonJob::dispatch()->onQueue('json-generation');
+        } catch (Throwable $e) {
+            Log::error('Failed to dispatch slot JSON regeneration jobs: ' . $e->getMessage(), [
+                'practitioner_id' => $practitioner_id,
+            ]);
+        }
 
         return response()->json(['message' => 'Las horas disponibles de visita han sido generadas con éxito'], 201);
     }
