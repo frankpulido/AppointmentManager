@@ -32,11 +32,14 @@ class SlotJsonServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Temporarily disabled for deployment debugging
+        /*
         if ($this->app->runningInConsole() && function_exists('config_path')) {
             $this->publishes([
                 __DIR__.'/../../config/slot_json.php' => config_path('slot_json.php'),
             ], 'slot-json-config');
         }
+        */
     }   
 }
 ?>
