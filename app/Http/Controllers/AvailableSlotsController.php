@@ -19,7 +19,8 @@ class AvailableSlotsController extends Controller
 
         $max_days_ahead = Appointment::MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD; // 91 days ahead from today
         
-        $availableSlots90 = AvailableTimeSlotDiagnosis::query('slot_date', '<=', now()->addDays($max_days_ahead)->toDateString())
+        $availableSlots90 = AvailableTimeSlotDiagnosis::query()
+            ->where('slot_date', '<=', now()->addDays($max_days_ahead)->toDateString())
             ->orderBy('slot_date')
             ->orderBy('slot_start_time')
             ->get();
@@ -43,7 +44,8 @@ class AvailableSlotsController extends Controller
 
         $max_days_ahead = Appointment::MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD; // 91 days ahead from today
 
-        $availableSlots60 = AvailableTimeSlot::query('slot_date', '<=', now()->addDays($max_days_ahead)->toDateString())
+        $availableSlots60 = AvailableTimeSlot::query()
+            ->where('slot_date', '<=', now()->addDays($max_days_ahead)->toDateString())
             ->orderBy('slot_date')
             ->orderBy('slot_start_time')
             ->get();

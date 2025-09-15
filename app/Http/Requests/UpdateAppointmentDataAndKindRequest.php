@@ -65,7 +65,7 @@ class UpdateAppointmentDataAndKindRequest extends FormRequest
             'patient_phone.max' => 'El teléfono del paciente debe contener un máximo de 15 caracteres',
             'patient_phone.regex' => 'El teléfono del paciente debe contener solo números, espacios, guiones y puede empezar con un +',
             'kind_of_appointment.required' => 'El tipo de visita es un campo obligatorio',
-            'kind_of_appointment.in' => 'El tipo de visita debe ser "diagnose" o "treatment"',
+            'kind_of_appointment.in' => 'El tipo de visita debe ser ' . implode(', ', Appointment::VALID_KINDS),
         ];
     }
 

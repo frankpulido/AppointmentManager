@@ -52,7 +52,7 @@ class StoreAvailableSlotRequest extends FormRequest
             'slot_start_time.date_format' => 'La hora de inicio de la visita debe tener un formato de hora válido (HH:MM:SS)',
             'slot_end_time.date_format' => 'La hora de fin de la visita debe tener un formato de hora válido (HH:MM:SS)',
             'slot_end_time.after' => 'La hora de fin de la visita debe ser posterior a la hora de inicio',
-            'kind_of_appointment.in' => 'El tipo de visita debe ser "diagnose" o "treatment"',
+            'kind_of_appointment.in' => 'El tipo de visita debe ser ' . implode(', ', Appointment::VALID_KINDS),
         ];
     }
 

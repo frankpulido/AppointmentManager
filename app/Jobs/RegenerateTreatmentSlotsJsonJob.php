@@ -37,7 +37,8 @@ class RegenerateTreatmentSlotsJsonJob implements ShouldQueue
             })->toArray();
 
             // Get ALL available 60-minute treatment slots (no practitioner filtering)
-            $availableSlots60 = AvailableTimeSlot::query('slot_date', '<=', now()->addDays($max_days_ahead)->toDateString())
+            $availableSlots60 = AvailableTimeSlot::query()
+                ->where('slot_date', '<=', now()->addDays($max_days_ahead)->toDateString())
                 ->orderBy('slot_date')
                 ->orderBy('slot_start_time')
                 ->get()
