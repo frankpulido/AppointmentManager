@@ -8,6 +8,7 @@ namespace App\Console\Commands;
 // In the shell, run: php artisan app:refresh-holidays
 
 use Illuminate\Console\Command;
+use Throwable;
 use Illuminate\Support\Facades\DB;
 use Database\Seeders\HolidaySeeder;
 
@@ -37,7 +38,7 @@ class RefreshHolidays extends Command
             // Seed holidays (seeder handles current + next year automatically)
             $this->call(HolidaySeeder::class);
             $this->info("Holiday seeding completed successfully.");
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->error("Failed to seed holidays: " . $e->getMessage());
             return Command::FAILURE;
         }
@@ -48,7 +49,7 @@ class RefreshHolidays extends Command
                 ->where('date', '<', now()->toDateString())
                 ->delete();
             $this->info("Past holiday cleanup completed successfully.");
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->error("Failed to clean past holidays: " . $e->getMessage());
             return Command::FAILURE;
         }

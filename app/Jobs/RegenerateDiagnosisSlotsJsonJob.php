@@ -53,7 +53,7 @@ class RegenerateDiagnosisSlotsJsonJob implements ShouldQueue
 
             Log::info('Diagnosis slots JSON file regenerated successfully');
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Log::error('Failed to regenerate diagnosis slots JSON file: ' . $e->getMessage(), [
                 'exception' => $e,
             ]);
