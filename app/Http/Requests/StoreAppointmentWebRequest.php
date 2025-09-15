@@ -37,7 +37,14 @@ class StoreAppointmentWebRequest extends FormRequest
     {
         return [
             'practitioner_id' => 'required|exists:practitioners,id',
-            'appointment_date' => 'required|date|date_format:Y-m-d|after:today', // Important : only after Today
+            'appointment_date' => [
+                'required',
+                'date',
+                'date_format:Y-m-d',
+                'after:today',
+                'before: ' . now()->addDays(Appointment::MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD)->toDateString()
+            ],
+            //'required|date|date_format:Y-m-d|after:today|before:today+Appointment::MAX_APPOINTMENT_DAYS', // Important : only after Today
             'appointment_start_time' => 'required|date_format:H:i:s',
             //'appointment_end_time' => 'required|date_format:H:i:s|after:appointment_start_time',
             'patient_first_name' => 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
@@ -58,6 +65,7 @@ class StoreAppointmentWebRequest extends FormRequest
             'appointment_date.required' => 'La fecha de la cita es un campo obligatorio',
             'appointment_date.date' => 'La fecha de la cita debe tener un formato de fecha valido (AAAA-MM-DD)',
             'appointment_date.after' => 'La fecha de la cita debe ser posterior a la fecha actual',
+            'appointment_date.before' => 'La fecha de la cita debe ser como máximo ' . Appointment::MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD . ' días a partir de hoy',
             'appointment_start_time.required' => 'La hora de inicio de la cita es un campo obligatorio',
             'appointment_start_time.date_format' => 'La hora de inicio de la cita debe tener un formato de hora valido (HH:MM:SS)',
             //'appointment_end_time.required' => 'La hora de fin de la cita es un campo obligatorio',

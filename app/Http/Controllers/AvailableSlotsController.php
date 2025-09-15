@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\AvailableTimeSlotDiagnosis;
 use App\Models\AvailableTimeSlot;
 use App\Models\Practitioner;
+use App\Models\Appointment;
+use Illuminate\Http\JsonResponse;
 
 class AvailableSlotsController extends Controller
 {
@@ -14,8 +16,10 @@ class AvailableSlotsController extends Controller
         $practitioners = Practitioner::get()->mapWithKeys(function($p) {
             return [$p->id => $p->first_name . ' ' . $p->last_name];
         })->toArray();
+
+        $max_days_ahead = Appointment::MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD; // 91 days ahead from today
         
-        $availableSlots90 = AvailableTimeSlotDiagnosis::query()
+        $availableSlots90 = AvailableTimeSlotDiagnosis::query('slot_date', '<=', now()->addDays($max_days_ahead)->toDateString())
             ->orderBy('slot_date')
             ->orderBy('slot_start_time')
             ->get();
@@ -37,7 +41,9 @@ class AvailableSlotsController extends Controller
             return [$p->id => $p->first_name . ' ' . $p->last_name];
         })->toArray();
 
-        $availableSlots60 = AvailableTimeSlot::query()
+        $max_days_ahead = Appointment::MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD; // 91 days ahead from today
+
+        $availableSlots60 = AvailableTimeSlot::query('slot_date', '<=', now()->addDays($max_days_ahead)->toDateString())
             ->orderBy('slot_date')
             ->orderBy('slot_start_time')
             ->get();

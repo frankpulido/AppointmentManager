@@ -7,6 +7,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 use App\Models\Practitioner;
+use App\Models\Appointment;
 use App\Models\AvailableTimeSlotDiagnosis;
 use App\Services\SlotJsonDelivery\SlotJsonDeliveryStrategy;
 
@@ -27,6 +28,8 @@ class RegenerateDiagnosisSlotsJsonJob implements ShouldQueue
      */
     public function handle(): void
     {
+        $max_days_ahead = Appointment::MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD; // 91 days ahead from today
+
         try {
             // Get ALL practitioners (no role filtering - public needs all)
             $practitioners = Practitioner::get()->mapWithKeys(function($p) {
@@ -34,7 +37,7 @@ class RegenerateDiagnosisSlotsJsonJob implements ShouldQueue
             })->toArray();
 
             // Get ALL available 90-minute diagnosis slots (no practitioner filtering)
-            $availableSlots90 = AvailableTimeSlotDiagnosis::query()
+            $availableSlots90 = AvailableTimeSlotDiagnosis::query('slot_date', '<=', now()->addDays($max_days_ahead)->toDateString())
                 ->orderBy('slot_date')
                 ->orderBy('slot_start_time')
                 ->get()

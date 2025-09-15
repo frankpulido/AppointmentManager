@@ -16,6 +16,7 @@ class Appointment extends Model
     public const BUFFER_MINUTES = 15;
     public const DURATION_MINUTES_DIAGNOSE = 90;
     public const DURATION_MINUTES_TREATMENT = 60;
+    public const MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD = 91; # maximum days ahead for online appointments of 13 weeks
     public const VALID_STATUSES = ['scheduled', 're-scheduled', 'offered', 'cancelled', 'no-show'];
     public const VALID_KINDS = ['diagnose', 'treatment'];
     protected $table = 'appointments';
