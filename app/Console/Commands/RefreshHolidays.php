@@ -1,6 +1,11 @@
 <?php
 declare(strict_types=1);
 namespace App\Console\Commands;
+// This command seeds Holidays on Jan 1st at midnight 2 years ahead.
+// This way the system has Holidays seeded for minimum 1 year and maximum 2 years ahead.
+// Also cleans past holidays.
+// Check /routes/console.php
+// In the shell, run: php artisan app:refresh-holidays
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -25,19 +30,29 @@ class RefreshHolidays extends Command
     /**
      * Execute the console command.
      */
-    public function handle() : int
+
+    public function handle(): int
     {
-        $now = now();
-        $currentYear = $now->year;
-        $targetYear = $currentYear + 2;
-        $cutoffDate = $currentYear - 1;
-
-        $this->call(HolidaySeeder::class, ['--year' => $targetYear]);
-
-        DB::table('holidays')
-            ->where('date', '<', "{$cutoffDate}-01-01")
-            ->delete();
-        $this->info("Seeded holidays for {$targetYear} and cleaned up data before {$cutoffDate}.");
+        try {
+            // Seed holidays (seeder handles current + next year automatically)
+            $this->call(HolidaySeeder::class);
+            $this->info("Holiday seeding completed successfully.");
+        } catch (\Throwable $e) {
+            $this->error("Failed to seed holidays: " . $e->getMessage());
+            return Command::FAILURE;
+        }
+        
+        try {
+            // Clean past holidays
+            DB::table('holidays')
+                ->where('date', '<', now()->toDateString())
+                ->delete();
+            $this->info("Past holiday cleanup completed successfully.");
+        } catch (\Throwable $e) {
+            $this->error("Failed to clean past holidays: " . $e->getMessage());
+            return Command::FAILURE;
+        }
+        
         return Command::SUCCESS;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace App\Console\Commands;
-// This command deletes past available time slots. Scheduled to run daily at midnoght, check /routes/console.php.
+// This command deletes past available time slots. Scheduled to run daily at midnight, check /routes/console.php.
 // In the shell, run: php artisan slots:clean-past
 
 use Illuminate\Console\Command;
