@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             WaitingListSeeder::class,
         ]);
         
-        User::factory()->create([
+        User::UpdateOrCreate([
             'name' => 'frankpulido',
             'email' => 'frankpulido@me.com',
             'password' => 'admin1234',
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             'practitioner_id' => null,
         ]);
 
-        User::factory()->create([
+        User::UpdateOrCreate([
             'name' => 'lauradelasheras',
             'email' => 'laura@fisioterapiayosteopatiabarcelona.es',
             'password' => 'osteo1234',
