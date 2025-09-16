@@ -58,7 +58,7 @@ class DeleteAppointmentRequest extends FormRequest
         throw new HttpResponseException(
             response()->json([
                 'message' => $validator->errors()->first()
-            ], 404)
+            ], 422)
         );
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PractitionerAppointmentController;
 use App\Http\Controllers\AvailableSlotsController;
 use App\Http\Controllers\PractitionerAvailableSlotsController;
+use App\Http\Controllers\PractitionerVacationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -35,6 +36,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/practitioner/appointments/delete', [PractitionerAppointmentController::class, 'destroy'])->name('practitioner.appointments.destroy');
     Route::post('/practitioner/appointments/update/{id}', [PractitionerAppointmentController::class, 'update'])->name('practitioner.appointments.update');
     Route::get('/practitioner/appointments/{id}', [PractitionerAppointmentController::class, 'show'])->name('practitioner.appointments.show');
+    Route::get('/practitioner/vacations/index', [PractitionerVacationController::class, 'index'])->name('practitioners.vacations.index');
+    Route::post('/practitioner/vacations/store', [PractitionerVacationController::class, 'store'])->name('practitioners.vacations.store');
+    Route::post('/practitioner/vacations/delete', [PractitionerVacationController::class, 'destroy'])->name('practitioners.vacations.destroy');
+    Route::put('/practitioner/vacations/update', [PractitionerVacationController::class, 'update'])->name('practitioners.vacations.update');
     //Route::get('/practitioner/appointments/{id}/edit', [PractitionerAppointmentController::class, 'edit'])->name('practitioner.appointments.edit');
     //Route::put('/practitioner/appointments/{id}', [PractitionerAppointmentController::class, 'update'])->name('practitioner.appointments.update');
     //Route::delete('/practitioner/appointments/{id}', [PractitionerAppointmentController::class, 'destroy'])->name('practitioner.appointments.destroy');

@@ -3,11 +3,10 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Appointment;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class DeleteAvailableSlotRequest extends FormRequest
+class StoreVacationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,12 +14,12 @@ class DeleteAvailableSlotRequest extends FormRequest
     public function authorize(): bool
     {
         $user = auth('sanctum')->user();
-        // Admin can create appointments for anyone
+        // Admin can create vacations for anyone
         if ($user->role === 'admin') {
             return true;
         }
         
-        // Practitioners can only create appointments for themselves
+        // Practitioners can only create vacations for themselves
         return $user->role === 'practitioner' && $user->practitioner_id === $this->input('practitioner_id');
     }
 
@@ -32,21 +31,30 @@ class DeleteAvailableSlotRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'kind_of_appointment' => 'required|in:' . implode(',', Appointment::VALID_KINDS),
             'practitioner_id' => 'required|exists:practitioners,id',
-            'slot_id' => 'required|integer',
-        ];
-    }
-        public function messages(): array
-    {
-        return [
-            'kind_of_appointment.in' => 'El tipo de visita debe ser "diagnose" o "treatment"',
-            'practitioner_id.exists' => 'El profesional indicado no existe',
-            'slot_id.integer' => 'El id de la hora de visita debe ser un entero'
+            'start_date' => 'required|date|after_or_equal:today',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'reason' => 'nullable|string|max:255',
         ];
     }
 
-    protected function failedAuthorization()
+    public function messages(): array
+    {
+        return [
+            'practitioner_id.required' => 'El id del profesional es un campo obligatorio',
+            'practitioner_id.exists' => 'El profesional indicado no existe',
+            'start_date.required' => 'La fecha de inicio de las vacaciones es un campo obligatorio',
+            'start_date.date' => 'La fecha de inicio de las vacaciones debe tener un formato de fecha válido (AAAA-MM-DD)',
+            'start_date.after_or_equal' => 'La fecha de inicio de las vacaciones no puede ser anterior a hoy',
+            'end_date.required' => 'La fecha de fin de las vacaciones es un campo obligatorio',
+            'end_date.date' => 'La fecha de fin de las vacaciones debe tener un formato de fecha válido (AAAA-MM-DD)',
+            'end_date.after_or_equal' => 'La fecha de fin de las vacaciones no puede ser anterior a la fecha de inicio',
+            'reason.string' => 'El motivo debe ser una cadena de texto',
+            'reason.max' => 'El motivo no puede exceder los 255 caracteres',
+        ];
+    }
+    
+    public function failedAuthorization()
     {
         throw new HttpResponseException(
             response()->json([
