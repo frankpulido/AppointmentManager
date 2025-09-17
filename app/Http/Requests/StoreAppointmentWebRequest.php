@@ -44,9 +44,8 @@ class StoreAppointmentWebRequest extends FormRequest
                 'after:today',
                 'before: ' . now()->addDays(Appointment::MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD)->toDateString()
             ],
-            //'required|date|date_format:Y-m-d|after:today|before:today+Appointment::MAX_APPOINTMENT_DAYS', // Important : only after Today
             'appointment_start_time' => 'required|date_format:H:i:s',
-            //'appointment_end_time' => 'required|date_format:H:i:s|after:appointment_start_time',
+            // Calculated by Controller : 'appointment_end_time' => 'required|date_format:H:i:s|after:appointment_start_time',
             'patient_first_name' => 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
             'patient_last_name'=> 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
             'patient_email' => 'email|max:50',
