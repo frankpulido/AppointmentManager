@@ -15,7 +15,7 @@ class StorePractitionerRequest extends FormRequest
     {
         $user = auth('sanctum')->user();
         // ONLY Admins can create Practitioners
-        if ($user->role === 'admin') {
+        if ($user->role === 'admin' || $user->role === 'superadmin') {
             return true;
         }
         return false;
@@ -31,7 +31,8 @@ class StorePractitionerRequest extends FormRequest
         return [
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'specialties' => 'array|exists:specialties,spetialty_name',
+            'specialties' => 'array',
+            'specialties.*' => 'exists:specialties,specialty_name',
             'email' => 'required|string',
             'phone' => 'required|integer',
         ];
@@ -45,7 +46,7 @@ class StorePractitionerRequest extends FormRequest
             'last_name.required' => 'El apellido es un campo obligatorio',
             'last_name.string' => 'El apellido debe ser una cadena de texto',
             'specialties.array' => 'Las especialidades deben ser un array de textos',
-            'specialties.exists' => 'Alguna de las especialidades indicadas no existe',
+            'specialties.*.exists' => 'Alguna de las especialidades seleccionadas no es válida',
             'email.required' => 'El email es un campo obligatorio',
             'email.string' => 'El email debe tener un formato válido',
             'phone.required' => 'El teléfono es un campo obligatorio',

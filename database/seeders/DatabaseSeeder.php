@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         ]);
         
         User::UpdateOrCreate([
-            'name' => 'frankpulido',
+            'username' => 'frankpulido',
             'email' => 'frankpulido@me.com',
             'password' => 'admin1234',
             'role' => 'admin',
@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::UpdateOrCreate([
-            'name' => 'lauradelasheras',
+            'username' => 'lauradelasheras',
             'email' => 'laura@fisioterapiayosteopatiabarcelona.es',
             'password' => 'osteo1234',
             'role' => 'practitioner',

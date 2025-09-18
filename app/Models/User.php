@@ -3,8 +3,10 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -19,7 +21,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'username',
         'email',
         'password',
         'role',
@@ -47,6 +49,20 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    protected function username(): Attribute
+    {
+        return Attribute::make(
+            set: fn ($value) => strtolower(str_replace(' ', '', trim($value)))
+        );
+    }
+
+    protected function email(): Attribute
+    {
+        return Attribute::make(
+            set: fn ($value) => strtolower(str_replace(' ', '', trim($value)))
+        );
     }
 
     public function practitioner()
