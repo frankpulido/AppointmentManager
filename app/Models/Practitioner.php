@@ -14,7 +14,7 @@ class Practitioner extends Model
     protected $fillable = [
         'first_name',
         'last_name',
-        'specialization',
+        'specialties',
         'email',
         'phone',
     ];
@@ -22,7 +22,7 @@ class Practitioner extends Model
     protected $casts = [
         'first_name' => 'string',
         'last_name' => 'string',
-        'specialization' => 'string',
+        'specialties' => 'array',
         'email' => 'string',
         'phone' => 'integer',
     ];
@@ -51,4 +51,11 @@ class Practitioner extends Model
     {
         return $this->hasMany(Vacation::class);
     }
+
+    /*
+    public function specialties()
+    {
+        return $this->belongsToMany(Specialty::class);
+    }
+    */
 }

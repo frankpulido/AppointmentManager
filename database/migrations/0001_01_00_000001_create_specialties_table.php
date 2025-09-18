@@ -1,7 +1,5 @@
 <?php
 declare(strict_types=1);
-
-use App\Models\Specialty;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,14 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('practitioners', function (Blueprint $table) {
+        Schema::create('specialties', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->json('specialties')->nullable();
-            //$table->json('specialties_ids')->nullable();
-            $table->string('email')->unique();
-            $table->string('phone')->unique();
+            $table->string('specialty_name')->unique();
             $table->timestamps();
         });
     }
@@ -30,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('practitioners');
+        Schema::dropIfExists('specialties');
     }
 };

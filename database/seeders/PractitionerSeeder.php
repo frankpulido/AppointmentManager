@@ -15,14 +15,14 @@ class PractitionerSeeder extends Seeder
         Practitioner::create([
             'first_name' => 'Frank',
             'last_name' => 'Pulido',
-            'specialization' => 'Osteópata y Fisioterapeuta Deportivo',
+            'specialties' => ['fisioterapeuta'],
             'email' => 'frankpulido@me.com',
             'phone' => '653343353'
         ]);
         Practitioner::create([
             'first_name' => 'Laura',
             'last_name' => 'de las Heras Cuesta',
-            'specialization' => 'Osteópata y Fisioterapeuta Deportiva',
+            'specialties' => ['osteopata', 'fisioterapeuta', 'fisioterapeuta deportivo'],
             'email' => 'laura@fisioterapiayosteopatiabarcelona.es',
             'phone' => '677389143'
         ]);
