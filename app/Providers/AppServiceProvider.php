@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Artisan;
 use App\Services\SlotJsonDelivery\SlotJsonDeliveryStrategy;
 use App\Services\SlotJsonDelivery\LocalFileStrategy;
 use App\Services\SlotJsonDelivery\RemoteApiStrategy;
@@ -37,6 +38,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // We need to run migrations automatically in Railway production environment
+        if ($this->app->environment('production')) {
+            Artisan::call('migrate', ['--force' => true]);
+        }
     }
 }
