@@ -16,14 +16,14 @@ class AdminController extends Controller
     {
         $user = auth('sanctum')->user();
 
-        if ($user->role === 'admin') {
+        if ($user->role === 'admin' || $user->role === 'superadmin') {
             // Admin can see all users and practitioners
             $users = User::all();
             $practitioners = Practitioner::all();
             return response()->json([
                 'users' => $users,
                 'practitioners' => $practitioners,
-            ]);
+            ], 200);
         } else {
             return response()->json([
                 'message' => 'No autorizado para realizar esta acción'
@@ -40,6 +40,7 @@ class AdminController extends Controller
     {
         // Logic to store a newly created practitioner in storage
         $validated = $request->validated();
+
         try {
             $practitionerService = new PractitionerCreationService();
             $newPractitioner = $practitionerService->create($validated);

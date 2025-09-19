@@ -33,8 +33,9 @@ class StorePractitionerRequest extends FormRequest
             'last_name' => 'required|string',
             'specialties' => 'array',
             'specialties.*' => 'exists:specialties,specialty_name',
-            'email' => 'required|string',
+            'email' => 'required|email',
             'phone' => 'required|integer',
+            'user_id' => 'required|integer|exists:users,id',
         ];
     }
 
@@ -48,9 +49,12 @@ class StorePractitionerRequest extends FormRequest
             'specialties.array' => 'Las especialidades deben ser un array de textos',
             'specialties.*.exists' => 'Alguna de las especialidades seleccionadas no es válida',
             'email.required' => 'El email es un campo obligatorio',
-            'email.string' => 'El email debe tener un formato válido',
+            'email.email' => 'El email debe tener un formato válido',
             'phone.required' => 'El teléfono es un campo obligatorio',
             'phone.integer' => 'El teléfono sólo puede contener números',
+            'user_id.required' => 'El ID de usuario es un campo obligatorio',
+            'user_id.integer' => 'El ID de usuario debe ser un número entero',
+            'user_id.exists' => 'El usuario seleccionado no existe',
         ];
     }
 
