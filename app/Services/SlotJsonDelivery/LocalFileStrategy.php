@@ -15,10 +15,12 @@ class LocalFileStrategy extends SlotJsonDeliveryStrategy
     public function __construct()
     {
         // Primary path for development/production API access
-        $this->primaryPath = public_path('api/slots');
+        $this->primaryPath = public_path(config('slot_json.local.primary_path', 'api/slots'));
+        //$this->primaryPath = public_path('api/slots');
         
         // Backup path (optional) - used in production for redundancy
-        $this->backupPath = config('slot_json.backup_path', storage_path('app/public/slots'));
+        $this->backupPath = storage_path(config('slot_json.local.backup_path', 'app/public/slots'));
+        //$this->backupPath = config('slot_json.backup_path', storage_path('app/public/slots'));
     }
 
     /**

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 use App\Exceptions\PractitionerCreationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PractitionerCreationService
 {
