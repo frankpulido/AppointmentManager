@@ -38,9 +38,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // We need to run migrations automatically in Railway production environment
+        // We need to run migrations automatically in production environment
+        /* Not needed in Railway, as it runs 'php artisan migrate --force' in release phase
+         * and it fails if there are no migrations to run.
+         * 
+         * In Heroku it is needed, as it does not have that feature.
+         * 
+         * In local development it is not needed, as we run 'php artisan migrate' manually.
+        
         if ($this->app->environment('production')) {
             Artisan::call('migrate', ['--force' => true]);
         }
+        */
     }
 }
