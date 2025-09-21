@@ -12,5 +12,11 @@ Possible Outcomes:
     Works (shows PHP info) → Laravel bootstrap is broken
     502 Error → PHP/server environment is broken
     Timeout → Network/firewall issues
+
+After testing, remove this file and use the appropiate NIXPACKS_START_CMD variable.
+
+NIXPACKS_BUILD_CMD="composer install --optimize-autoloader && npm ci --omit=dev"
+NIXPACKS_START_CMD="php artisan migrate:fresh --force && php artisan db:seed --force && php artisan storage:link && while true; do php -S 0.0.0.0:$PORT -t public; done"
+
 */
 ?>
