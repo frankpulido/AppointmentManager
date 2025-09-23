@@ -30,14 +30,14 @@ class PractitionerAvailableSlotsController extends Controller
                 return [$p->id => $p->first_name . ' ' . $p->last_name];
             })->toArray();
         
-            $availableSlots60 = AvailableTimeSlot::query()
+            $availableSlotsTreatment = AvailableTimeSlot::query()
                 ->orderBy('slot_date')
                 ->orderBy('slot_start_time')
                 ->get()
                 ->groupBy('practitioner_id')
                 ->toArray();
 
-            $availableSlots90 = AvailableTimeSlotDiagnosis::query()
+            $availableSlotsDiagnosis = AvailableTimeSlotDiagnosis::query()
                 ->orderBy('slot_date')
                 ->orderBy('slot_start_time')
                 ->get()
@@ -52,14 +52,14 @@ class PractitionerAvailableSlotsController extends Controller
                     return [$p->id => $p->first_name . ' ' . $p->last_name];
                 })->toArray();
             
-            $availableSlots60 = AvailableTimeSlot::where('practitioner_id', $user->practitioner_id)
+            $availableSlotsTreatment = AvailableTimeSlot::where('practitioner_id', $user->practitioner_id)
                 ->orderBy('slot_date')
                 ->orderBy('slot_start_time')
                 ->get()
                 ->groupBy('practitioner_id')
                 ->toArray();
 
-            $availableSlots90 = AvailableTimeSlotDiagnosis::where('practitioner_id', $user->practitioner_id)
+            $availableSlotsDiagnosis = AvailableTimeSlotDiagnosis::where('practitioner_id', $user->practitioner_id)
                 ->orderBy('slot_date')
                 ->orderBy('slot_start_time')
                 ->get()
@@ -69,12 +69,12 @@ class PractitionerAvailableSlotsController extends Controller
 
         return response()->json([
             'practitioners' => $practitioners,
-            'treatment_available_slots' => $availableSlots60,
-            'diagnose_available_slots' => $availableSlots90
+            'treatment_available_slots' => $availableSlotsTreatment,
+            'diagnose_available_slots' => $availableSlotsDiagnosis
         ], 200); 
     }
 
-    public function index60()
+    public function indexTreatment()
     {
         $user = auth('sanctum')->user();
 
@@ -84,7 +84,7 @@ class PractitionerAvailableSlotsController extends Controller
                 return [$p->id => $p->first_name . ' ' . $p->last_name];
             })->toArray();
         
-            $availableSlots60 = AvailableTimeSlot::query()
+            $availableSlotsTreatment = AvailableTimeSlot::query()
                 ->orderBy('slot_date')
                 ->orderBy('slot_start_time')
                 ->get()
@@ -99,7 +99,7 @@ class PractitionerAvailableSlotsController extends Controller
                     return [$p->id => $p->first_name . ' ' . $p->last_name];
                 })->toArray();
             
-            $availableSlots60 = AvailableTimeSlot::where('practitioner_id', $user->practitioner_id)
+            $availableSlotsTreatment = AvailableTimeSlot::where('practitioner_id', $user->practitioner_id)
                 ->orderBy('slot_date')
                 ->orderBy('slot_start_time')
                 ->get()
@@ -109,12 +109,12 @@ class PractitionerAvailableSlotsController extends Controller
 
         return response()->json([
             'practitioners' => $practitioners,
-            'treatment_available_slots' => $availableSlots60,
+            'treatment_available_slots' => $availableSlotsTreatment,
         ], 200); 
     }
 
 
-    public function index90()
+    public function indexDiagnosis()
     {
         $user = auth('sanctum')->user();
 
@@ -124,7 +124,7 @@ class PractitionerAvailableSlotsController extends Controller
                 return [$p->id => $p->first_name . ' ' . $p->last_name];
             })->toArray();
 
-            $availableSlots90 = AvailableTimeSlotDiagnosis::query()
+            $availableSlotsDiagnosis = AvailableTimeSlotDiagnosis::query()
                 ->orderBy('slot_date')
                 ->orderBy('slot_start_time')
                 ->get()
@@ -139,7 +139,7 @@ class PractitionerAvailableSlotsController extends Controller
                     return [$p->id => $p->first_name . ' ' . $p->last_name];
                 })->toArray();
             
-            $availableSlots90 = AvailableTimeSlotDiagnosis::where('practitioner_id', $user->practitioner_id)
+            $availableSlotsDiagnosis = AvailableTimeSlotDiagnosis::where('practitioner_id', $user->practitioner_id)
                 ->orderBy('slot_date')
                 ->orderBy('slot_start_time')
                 ->get()
@@ -149,7 +149,7 @@ class PractitionerAvailableSlotsController extends Controller
 
         return response()->json([
             'practitioners' => $practitioners,
-            'diagnose_available_slots' => $availableSlots90
+            'diagnose_available_slots' => $availableSlotsDiagnosis
         ], 200); 
     }
 
@@ -162,15 +162,16 @@ class PractitionerAvailableSlotsController extends Controller
     {
         $validated = $request->validated();
         $practitioner_id = $validated['practitioner_id'];
+        $practitioner = Practitioner::find($practitioner_id);
         $overlapService = new CheckAppointmentOverlapService();
 
         // check whether slot_end_time is null and use defaults if so
         if (is_null($validated['slot_end_time'])) {
             if ($validated['kind_of_appointment'] === 'diagnose') {
-                $slotDefaultEndTimeDiagnose = Carbon::parse($validated['slot_start_time'])->addMinutes(Appointment::DURATION_MINUTES_DIAGNOSE)->format('H:i:s');
+                $slotDefaultEndTimeDiagnose = $practitioner->calculateEndTime('diagnose', $validated['slot_start_time']);
                 $validated['slot_end_time'] = $slotDefaultEndTimeDiagnose;
             } elseif ($validated['kind_of_appointment'] === 'treatment') {
-                $slotDefaultEndTimeTreatment = Carbon::parse($validated['slot_start_time'])->addMinutes(Appointment::DURATION_MINUTES_TREATMENT)->format('H:i:s');
+                $slotDefaultEndTimeTreatment = $practitioner->calculateEndTime('treatment', $validated['slot_start_time']);
                 $validated['slot_end_time'] = $slotDefaultEndTimeTreatment;
             } else {
                 return response()->json(['error' => 'Tipo de cita no válido'], 400);

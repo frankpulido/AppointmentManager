@@ -11,7 +11,7 @@ class AppointmentCreationService
 {
     public function create(array $newData)
     {
-        // We check whether appointment_end_time is null or !existsand use defaults if so
+        // We check whether appointment_end_time is null or !exists and use defaults if so
         // Requests from public front end : !exists
         // Requests from admin back end : exists but null
         // The reason is that update() method set it null to allow changing kind_of_appointment

@@ -19,14 +19,14 @@ Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 
 // Routes for website users
 Route::post('/schedule', [AppointmentController::class, 'store'])->name('schedule.store');
-Route::get('/diagnose', [AvailableSlotsController::class, 'index90'])->name('diagnose.index90');
-Route::get('/treatment', [AvailableSlotsController::class, 'index60'])->name('treatment.index60');
+Route::get('/diagnosis', [AvailableSlotsController::class, 'indexDiagnosis'])->name('diagnosis.index');
+Route::get('/treatment', [AvailableSlotsController::class, 'indexTreatment'])->name('treatment.index');
 
 // Routes for practitioners
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/practitioner/available-slots/index', [PractitionerAvailableSlotsController::class, 'index'])->name('practitioner.available-slots.index');
-    Route::get('/practitioner/available-slots/index60', [PractitionerAvailableSlotsController::class, 'index60'])->name('practitioner.available-slots.index60');
-    Route::get('/practitioner/available-slots/index90', [PractitionerAvailableSlotsController::class, 'index90'])->name('practitioner.available-slots.index90');
+    Route::get('/practitioner/available-slots/treatment', [PractitionerAvailableSlotsController::class, 'indexTreatment'])->name('practitioner.available-slots.treatment');
+    Route::get('/practitioner/available-slots/diagnosis', [PractitionerAvailableSlotsController::class, 'indexDiagnosis'])->name('practitioner.available-slots.diagnosis');
     //Route::get('/practitioner/available-slots/create', [PractitionerAvailableSlotsController::class, 'create'])->name('practitioner.available-slots.create');
     Route::post('/practitioner/available-slots/store', [PractitionerAvailableSlotsController::class, 'store'])->name('practitioner.available-slots.store');
     Route::post('/practitioner/available-slots/delete', [PractitionerAvailableSlotsController::class, 'destroy'])->name('practitioner.available-slots.destroy');
