@@ -5,13 +5,14 @@ namespace App\Services;
 use Illuminate\Support\Carbon;
 use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
+use App\Models\Practitioner;
 use App\Services\IsHolidayService;
 use App\Services\IsVacationService;
 
 class AvailableTimeSlotSeederService
 {
-    private array $timeSlotsTreatment = AvailableTimeSlot::DEFAULT_TIME_SLOTS_TREATMENT;
-    private array $timeSlotsDiagnosis = AvailableTimeSlotDiagnosis::DEFAULT_TIME_SLOTS_DIAGNOSIS;
+    //private array $timeSlotsTreatment = AvailableTimeSlot::DEFAULT_TIME_SLOTS_TREATMENT;
+    //private array $timeSlotsDiagnosis = AvailableTimeSlotDiagnosis::DEFAULT_TIME_SLOTS_DIAGNOSIS;
 
     /**
      * Seeds available time slots for Treatment appointments for the given practitioner.
@@ -23,7 +24,8 @@ class AvailableTimeSlotSeederService
      */
     public function seedTreatment(int $practitioner_id, string $start_date, ?string $end_date = null)
     {
-        $this->seedSlots($practitioner_id, $start_date, $end_date, $this->timeSlotsTreatment, AvailableTimeSlot::class);
+        $timeSlotsTreatment = Practitioner::find($practitioner_id)->getPractitionerSetting('treatment_slots');
+        $this->seedSlots($practitioner_id, $start_date, $end_date, $timeSlotsTreatment, AvailableTimeSlot::class);
     }
 
     /**
@@ -36,7 +38,8 @@ class AvailableTimeSlotSeederService
      */
     public function seedDiagnosis(int $practitioner_id, string $start_date, ?string $end_date = null)
     {
-        $this->seedSlots($practitioner_id, $start_date, $end_date, $this->timeSlotsDiagnosis, AvailableTimeSlotDiagnosis::class);
+        $timeSlotsDiagnosis = Practitioner::find($practitioner_id)->getPractitionerSetting('diagnosis_slots');
+        $this->seedSlots($practitioner_id, $start_date, $end_date, $timeSlotsDiagnosis, AvailableTimeSlotDiagnosis::class);
     }
 
     private function seedSlots(

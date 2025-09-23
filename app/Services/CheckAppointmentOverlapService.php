@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace App\Services;
 // This Service prevents Appointments created by the practitioner from overlapping (appointments requested by users are based on available free slots only)
 use App\Models\Appointment;
+use App\Models\Practitioner;
 use Carbon\Carbon;
 
 class CheckAppointmentOverlapService
@@ -16,15 +17,16 @@ class CheckAppointmentOverlapService
      * @param int $practitionerId
      * @return boolean
      */
-    public function checkOverlap(string $date, string $start, string $end, int $practitionerId) : bool
+    public function checkOverlap(string $date, string $start, string $end, int $practitioner_id) : bool
     {
         // We add a 15' buffer to the starting and ending times (we have to format since we receive data from form request) :
-        $buffer = Appointment::BUFFER_MINUTES;
+        //$buffer = $practitioner->getPractitionerSetting('buffer_minutes');
+        $buffer = Practitioner::find($practitioner_id)->getPractitionerSetting('buffer_minutes');
         $startWithBuffer = Carbon::parse($start)->subMinutes($buffer)->format('H:i:s');
         $endWithBuffer   = Carbon::parse($end)->addMinutes($buffer)->format('H:i:s');
 
         // We filter the existing appointments by practitioner and date
-        $check1 = Appointment::where('practitioner_id', $practitionerId)
+        $check1 = Appointment::where('practitioner_id', $practitioner_id)
             ->whereDate('appointment_date', $date)
             ->where(function ($query) use ($startWithBuffer, $endWithBuffer) {
                     $query->whereBetween('appointment_start_time', [$startWithBuffer, $endWithBuffer])
@@ -32,7 +34,7 @@ class CheckAppointmentOverlapService
             })
             ->exists();
         
-        $check2 = Appointment::where('practitioner_id', $practitionerId)
+        $check2 = Appointment::where('practitioner_id', $practitioner_id)
             ->whereDate('appointment_date', $date)
             ->where('appointment_start_time', '<=', $startWithBuffer)
             ->where('appointment_end_time', '>=', $endWithBuffer)

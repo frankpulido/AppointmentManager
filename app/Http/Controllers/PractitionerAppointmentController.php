@@ -76,8 +76,20 @@ class PractitionerAppointmentController extends Controller
         return response()->json(
             [
                 'message' => 'La visita ha sido reservada con éxito',
-                'appointment' => $newAppointment
-            ], 201);
+                'appointment' => $newAppointment->only([
+                'id',
+                'practitioner_id',
+                'kind_of_appointment',
+                'appointment_date',
+                'appointment_start_time',
+                'appointment_end_time',
+                'patient_first_name',
+                'patient_last_name',
+                'patient_email',
+                'status',
+            ])],
+            201
+        );
     }
 
     public function show($id)
@@ -143,8 +155,20 @@ class PractitionerAppointmentController extends Controller
         
         return response()->json([
             'message' => 'La reserva de visita ha sido actualizada con éxito',
-            'appointment' => $newAppointment,
-        ], 200);
+            'appointment' => $newAppointment->only([
+                'id',
+                'practitioner_id',
+                'kind_of_appointment',
+                'appointment_date',
+                'appointment_start_time',
+                'appointment_end_time',
+                'patient_first_name',
+                'patient_last_name',
+                'patient_email',
+                'status',
+            ])],
+            200
+        );
     }
 
     public function destroy(DeleteAppointmentRequest $request)

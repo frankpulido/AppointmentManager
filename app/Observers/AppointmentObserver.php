@@ -22,7 +22,7 @@ class AppointmentObserver
         $date = $appointment->appointment_date;
         
         // We add a 15' buffer to the starting and ending times :
-        $buffer = Appointment::BUFFER_MINUTES;
+        $buffer = $appointment->practitioner->getPractitionerSetting('buffer_minutes');
         $startWithBuffer = Carbon::parse($appointment->appointment_start_time)->subMinutes($buffer);
         $endWithBuffer = Carbon::parse($appointment->appointment_end_time)->addMinutes($buffer);
 

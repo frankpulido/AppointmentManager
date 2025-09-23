@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Appointment;
+use App\Models\Practitioner;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
@@ -26,6 +27,11 @@ class StoreAppointmentWebRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge(['on_line' => true]);
+        $practitioner = Practitioner::find($this->input('practitioner_id'));
+        $max_days_ahead = $practitioner?->getPractitionerSetting('max_days_ahead');
+        if($max_days_ahead) {
+            $this->merge(['max_days_ahead_date' => now()->addDays($max_days_ahead)->toDateString()]);
+        }
     }
 
     /**
@@ -42,7 +48,7 @@ class StoreAppointmentWebRequest extends FormRequest
                 'date',
                 'date_format:Y-m-d',
                 'after:today',
-                'before: ' . now()->addDays(Appointment::MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD)->toDateString()
+                'before_or_equal:max_days_ahead_date',
             ],
             'appointment_start_time' => 'required|date_format:H:i:s',
             // Calculated by Controller : 'appointment_end_time' => 'required|date_format:H:i:s|after:appointment_start_time',
@@ -64,7 +70,7 @@ class StoreAppointmentWebRequest extends FormRequest
             'appointment_date.required' => 'La fecha de la cita es un campo obligatorio',
             'appointment_date.date' => 'La fecha de la cita debe tener un formato de fecha valido (AAAA-MM-DD)',
             'appointment_date.after' => 'La fecha de la cita debe ser posterior a la fecha actual',
-            'appointment_date.before' => 'La fecha de la cita debe ser como máximo ' . Appointment::MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD . ' días a partir de hoy',
+            'appointment_date.before_or_equal' => 'La fecha de la cita debe ser como máximo ' . ($this->input('max_days_ahead_date') ?? ''),
             'appointment_start_time.required' => 'La hora de inicio de la cita es un campo obligatorio',
             'appointment_start_time.date_format' => 'La hora de inicio de la cita debe tener un formato de hora valido (HH:MM:SS)',
             //'appointment_end_time.required' => 'La hora de fin de la cita es un campo obligatorio',
@@ -76,7 +82,7 @@ class StoreAppointmentWebRequest extends FormRequest
             'patient_first_name.regex' => 'El nombre del paciente debe contener solo letras y espacios',
             'patient_last_name.required' => 'El apellido del paciente es un campo obligatorio',
             'patient_last_name.string' => 'El apellido del paciente debe ser una cadena de texto',
-            'patient_last_name.max' => 'El apellido del paciente debe tener un.maxcdn de 30 caracteres',
+            'patient_last_name.max' => 'El apellido del paciente debe tener máximo de 30 caracteres',
             'patient_last_name.regex' => 'El apellido del paciente debe contener solo letras y espacios',
             'patient_email.email' => 'El correo del paciente debe tener un formato de correo valido',
             'patient_email.max' => 'El correo del paciente debe contener un máximo de 50 caracteres',

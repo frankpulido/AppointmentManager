@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace App\Services;
 // This Service creates new Appointments
 use App\Models\Appointment;
+use App\Models\Practitioner;
 use App\Services\CheckAppointmentOverlapService;
 use App\Exceptions\OverlapException;
 
@@ -14,9 +15,9 @@ class AppointmentCreationService
         // Requests from public front end : !exists
         // Requests from admin back end : exists but null
         // The reason is that update() method set it null to allow changing kind_of_appointment
-        if (!array_key_exists('appointment_end_time', $newData) || 
-        is_null($newData['appointment_end_time'])) {
-                $newData['appointment_end_time'] = Appointment::calculateEndTime(
+        $practitioner = Practitioner::find($newData['practitioner_id']);
+        if (!array_key_exists('appointment_end_time', $newData) || is_null($newData['appointment_end_time'])) {
+            $newData['appointment_end_time'] = $practitioner->calculateEndTime(
                 $newData['kind_of_appointment'],
                 $newData['appointment_start_time']
             );

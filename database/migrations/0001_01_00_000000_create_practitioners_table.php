@@ -21,6 +21,7 @@ return new class extends Migration
             //$table->json('specialties_ids')->nullable();
             $table->string('email')->unique();
             $table->string('phone')->unique();
+            $table->json('custom_settings')->nullable();
             $table->timestamps();
         });
     }

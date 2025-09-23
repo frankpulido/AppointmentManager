@@ -13,10 +13,10 @@ use Carbon\Carbon;
 class Appointment extends Model
 {
     use HasFactory;
-    public const BUFFER_MINUTES = 15;
-    public const DURATION_MINUTES_DIAGNOSE = 90;
-    public const DURATION_MINUTES_TREATMENT = 60;
-    public const MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD = 91; # maximum days ahead for online appointments of 13 weeks
+    public const DEFAULT_BUFFER_MINUTES = 15;
+    public const DEFAULT_DURATION_MINUTES_DIAGNOSE = 90;
+    public const DEFAULT_DURATION_MINUTES_TREATMENT = 60;
+    public const DEFAULT_MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD = 91; # maximum days ahead for online appointments of 13 weeks
     public const VALID_STATUSES = ['scheduled', 're-scheduled', 'offered', 'cancelled', 'no-show'];
     public const VALID_KINDS = ['diagnose', 'treatment'];
     protected $table = 'appointments';
@@ -67,16 +67,23 @@ class Appointment extends Model
         );
     }
 
-    public static function calculateEndTime(string $kind, string $startTime): string
+    // Method below moved to Practitioner Model
+    // and modified to be non-static and use practitioner's setting
+    // as duration may vary between practitioners
+    // and also to avoid passing practitioner_id each time
+    // and also to avoid querying Practitioner each time
+    /*
+    public function calculateEndTime(string $kind, string $startTime): string
     {
         $minutes = $kind === 'diagnose'
-            ? self::DURATION_MINUTES_DIAGNOSE
-            : self::DURATION_MINUTES_TREATMENT;
+            ? $this->practitioner->getPractitionerSetting('duration_diagnosis')
+            : $this->practitioner->getPractitionerSetting('duration_treatment');
 
         return Carbon::parse($startTime)
             ->addMinutes($minutes)
             ->format('H:i:s');
     }
+    */
 
     public function practitioner()
     {

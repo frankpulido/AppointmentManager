@@ -32,12 +32,9 @@ class AvailableTimeSlotDiagnosis extends Model
         'slot_date' => 'date',
     ];
 
-    public static function calculatedEndTime(string $startTime): string
+    public function calculatedEndTime(string $startTime): string
     {
-        $minutes = Appointment::DURATION_MINUTES_DIAGNOSE;
-        return Carbon::parse($startTime)
-            ->addMinutes($minutes)
-            ->format('H:i:s');
+        return $this->practitioner->getPractitionerSetting('diagnosis', $startTime);
     }
 
     public function practitioner()

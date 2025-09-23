@@ -27,19 +27,16 @@ class AvailableTimeSlot extends Model
         'practitioner_id',
         'slot_date',
         'slot_start_time',
-        'slot_end_time'
+        'slot_end_time',
     ];
 
     protected $casts = [
         'slot_date' => 'date',
     ];
 
-    public static function calculatedEndTime(string $startTime): string
+    public function calculatedEndTime(string $startTime): string
     {
-        $minutes = Appointment::DURATION_MINUTES_TREATMENT;
-        return Carbon::parse($startTime)
-            ->addMinutes($minutes)
-            ->format('H:i:s');
+        return $this->practitioner->getPractitionerSetting('treatment', $startTime);
     }
 
     public function practitioner()

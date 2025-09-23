@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\OverlapException;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreAppointmentWebRequest;
-use App\Models\Appointment;
+use App\Models\Practitioner;
 use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
 use App\Services\AppointmentCreationService;
@@ -36,7 +36,16 @@ class AppointmentController extends Controller
 
         return response()->json([
             'message' => 'Su cita ha sido reservada con éxito',
-            'appointment' => $appointment],
+            'appointment' => $appointment->only([
+                'kind_of_appointment',
+                'appointment_date',
+                'appointment_start_time',
+                'appointment_end_time',
+                'patient_first_name',
+                'patient_last_name',
+                'patient_email',
+                'status',
+            ])],
             201
         );
     }
@@ -47,8 +56,9 @@ class AppointmentController extends Controller
         $model = $validated['kind_of_appointment'] === 'diagnose'
             ? AvailableTimeSlotDiagnosis::class
             : AvailableTimeSlot::class;
-        
-        $appointmentEndTime = Appointment::calculateEndTime(
+
+        $practitioner = Practitioner::find($validated['practitioner_id']);
+        $appointmentEndTime = $practitioner->calculateEndTime(
             $validated['kind_of_appointment'],
             $validated['appointment_start_time']
         );
