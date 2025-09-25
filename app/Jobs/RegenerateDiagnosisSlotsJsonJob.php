@@ -7,7 +7,6 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 use App\Models\Practitioner;
-use App\Models\Appointment;
 use App\Models\AvailableTimeSlotDiagnosis;
 use App\Services\SlotJsonDelivery\SlotJsonDeliveryStrategy;
 
@@ -28,8 +27,6 @@ class RegenerateDiagnosisSlotsJsonJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $max_days_ahead = Appointment::MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD; // 91 days ahead from today
-
         try {
             // Get ALL practitioners (no role filtering - public needs all)
             $practitioners = Practitioner::get()->mapWithKeys(function($p) {
@@ -37,18 +34,21 @@ class RegenerateDiagnosisSlotsJsonJob implements ShouldQueue
             })->toArray();
 
             // Get ALL available 90-minute diagnosis slots (no practitioner filtering)
-            $availableSlots90 = AvailableTimeSlotDiagnosis::query()
-                ->where('slot_date', '<=', now()->addDays($max_days_ahead)->toDateString())
-                ->orderBy('slot_date')
-                ->orderBy('slot_start_time')
-                ->get()
-                ->groupBy('practitioner_id')
-                ->toArray();
+            $all_diagnosis_slots = AvailableTimeSlotDiagnosis::with('practitioner')->get();
+
+            $available_diagnosis_slots_by_practitioner = $all_diagnosis_slots->filter(function ($slot) {
+                $max_days_ahead = $slot->practitioner->getPractitionerSetting('max_days_ahead');
+                return $slot->slot_date <= now()->addDays($max_days_ahead);
+            })
+            ->each(function ($slot) {
+                $slot->makeHidden('practitioner');
+            })
+            ->groupBy('practitioner_id');
 
             // Build JSON structure matching AvailableSlotsController::index90()
             $jsonData = [
                 'practitioners' => $practitioners,
-                'available_slots_diagnose' => $availableSlots90,
+                'available_slots_diagnose' => $available_diagnosis_slots_by_practitioner->toArray(),
             ];
 
             // Get delivery strategy from config and deliver the JSON

@@ -204,7 +204,7 @@ class PractitionerAppointmentController extends Controller
         $appointments = Appointment::where('practitioner_id', $validated['practitioner_id'])
             ->where('patient_first_name', 'LIKE', $validated['patient_first_name'])
             ->where('patient_last_name', 'LIKE', $validated['patient_last_name'])
-            ->get;
+            ->get();
         return response()->json($appointments, 200);
     }
 
