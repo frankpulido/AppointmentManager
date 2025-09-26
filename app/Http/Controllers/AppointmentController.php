@@ -8,6 +8,7 @@ use App\Http\Requests\StoreAppointmentWebRequest;
 use App\Models\Practitioner;
 use App\Models\AvailableTimeSlot;
 use App\Models\AvailableTimeSlotDiagnosis;
+use App\Services\IsAlreadyBookedService;
 use App\Services\AppointmentCreationService;
 
 class AppointmentController extends Controller
@@ -25,6 +26,11 @@ class AppointmentController extends Controller
         // Check if the requested slot is available
         if (!$slot) {
             return response()->json(['error' => 'Esta hora de visita no esta disponible'], 400);
+        }
+
+        $is_already_booked_service = new IsAlreadyBookedService();
+        if ($is_already_booked_service->isAlreadyBooked($validated)) {
+            return response()->json(['error' => 'Ya tiene una cita programada con su especialista. Por favor, contáctenos si desea reprogramarla.'], 400);
         }
 
         try {
