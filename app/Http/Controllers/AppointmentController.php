@@ -28,11 +28,16 @@ class AppointmentController extends Controller
             return response()->json(['error' => 'Esta hora de visita no esta disponible'], 400);
         }
 
+        // Check if the patient has already made a booking
+        $validated = $request->validated();
+        $validated['patient_phone'] = '+34' . $validated['patient_phone'];
+
         $is_already_booked_service = new IsAlreadyBookedService();
         if ($is_already_booked_service->isAlreadyBooked($validated)) {
             return response()->json(['error' => 'Ya tiene una cita programada con su especialista. Por favor, contáctenos si desea reprogramarla.'], 400);
         }
 
+        // Create the appointment
         try {
             $creationService = new AppointmentCreationService();
             $appointment = $creationService->create($validated);
@@ -50,6 +55,7 @@ class AppointmentController extends Controller
                 'patient_first_name',
                 'patient_last_name',
                 'patient_email',
+                'patient_phone',
                 'status',
             ])],
             201

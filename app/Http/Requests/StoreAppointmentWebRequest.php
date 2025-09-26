@@ -55,7 +55,7 @@ class StoreAppointmentWebRequest extends FormRequest
             'patient_first_name' => 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
             'patient_last_name'=> 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
             'patient_email' => 'email|max:50',
-            'patient_phone'=> 'required|string|max:15|regex:/^\+?[0-9\s\-]+$/',
+            'patient_phone'=> 'required|digits:9',
             'kind_of_appointment' => 'required|in:' . implode(',', Appointment::VALID_KINDS),
             'status' => 'in:' . implode(',', Appointment::VALID_STATUSES),
             'on_line' => 'boolean',

@@ -39,7 +39,13 @@ class StoreAppointmentRequest extends FormRequest
             'patient_first_name' => 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
             'patient_last_name'=> 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
             'patient_email' => 'email|max:50',
-            'patient_phone'=> 'required|string|max:15|regex:/^\+?[0-9\s\-]+$/',
+            'patient_phone' => [
+                'required',
+                'string',
+                'max:16',
+                'regex:/^\+[1-9]\d{1,14}$/'
+            ],
+            //'patient_phone'=> 'required|string|max:15|regex:/^\+?[0-9\s\-]+$/',
             'kind_of_appointment' => 'required|in:' . implode(',', Appointment::VALID_KINDS),
             'status' => 'in:' . implode(',', Appointment::VALID_STATUSES),
         ];
@@ -69,8 +75,8 @@ class StoreAppointmentRequest extends FormRequest
             'patient_email.max' => 'El correo del paciente debe contener un máximo de 50 caracteres',
             'patient_phone.required' => 'El teléfono del paciente es un campo obligatorio',
             'patient_phone.string' => 'El teléfono del paciente debe ser una cadena de texto',
-            'patient_phone.max' => 'El teléfono del paciente debe contener un máximo de 15 caracteres',
-            'patient_phone.regex' => 'El teléfono del paciente debe contener solo números, espacios, guiones y puede empezar con un +',
+            'patient_phone.max' => 'El teléfono del paciente debe contener un máximo de 16 caracteres',
+            'patient_phone.regex' => "El teléfono del paciente debe comenzar con '+' y contener sólo números a continuación",
             'kind_of_appointment.required' => 'El tipo de visita es un campo obligatorio',
             'kind_of_appointment.in' => 'El tipo de visita debe ser ' . implode(', ', Appointment::VALID_KINDS),
             'status.in' => 'El estado de la cita debe ser ' . implode(', ', Appointment::VALID_STATUSES),

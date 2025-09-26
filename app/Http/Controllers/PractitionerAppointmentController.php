@@ -165,6 +165,7 @@ class PractitionerAppointmentController extends Controller
                 'patient_first_name',
                 'patient_last_name',
                 'patient_email',
+                'patient_phone',
                 'status',
             ])],
             200

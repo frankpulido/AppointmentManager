@@ -63,9 +63,18 @@ class Appointment extends Model
     protected function patientPhone(): Attribute
     {
         return Attribute::make(
+            set: fn($value) => preg_replace('/(?!^\+)\D/', '', $value) // removes all non-digit chars but preserves "+" at the start
+        );
+    }
+
+    /*
+    protected function patientPhone(): Attribute
+    {
+        return Attribute::make(
             set: fn($value) => preg_replace('/[\s\-]/', '', $value) // removes spaces and dashes
         );
     }
+    */
 
     // Method below moved to Practitioner Model
     // and modified to be non-static and use practitioner's setting
