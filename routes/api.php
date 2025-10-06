@@ -14,6 +14,15 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+// Health check route
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'timestamp' => now(),
+        'service' => 'Appointment Manager'
+    ]);
+});
+
 // Authentication routes
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 
