@@ -26,10 +26,22 @@ Route::get('/health', function () {
 
 // For seeding in Railway (productiion environment - can be removed later if not needed), since my ppan doesn't include CLI access
 Route::post('/migrate-fresh-seed', function () {
-    Artisan::call('optimize:clear');
-    sleep(5);
-    Artisan::call('migrate:fresh', ['--seed' => true]);
-    return response()->json(['status' => 'Migration and seeding complete!']);
+    try {
+        Artisan::call('optimize:clear');
+        sleep(5);
+        Artisan::call('migrate:fresh', ['--seed' => true]);
+        $output = Artisan::output();
+
+        return response()->json([
+            'status' => 'Migration and seeding complete!',
+            'artisan_output' => $output,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ], 500);
+    }
 });
 /*
 Route::middleware(['auth:sanctum', 'role:admin'])->post('/migrate-fresh-seed', function () {
