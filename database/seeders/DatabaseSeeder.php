@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             WaitingListSeeder::class,
         ]);
         
-        User::UpdateOrCreate([
+        User::updateOrCreate([
             'username' => 'frankpulido',
             'email' => 'frankpulido@me.com',
             'password' => Hash::make('admin1234'),
@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             'practitioner_id' => null,
         ]);
 
-        User::UpdateOrCreate([
+        User::updateOrCreate([
             'username' => 'lauradelasheras',
             'email' => 'laura@fisioterapiayosteopatiabarcelona.es',
             'password' => Hash::make('osteo1234'),
