@@ -36,10 +36,12 @@ Route::post('/migrate-fresh-seed', function () {
             'status' => 'Migration and seeding complete!',
             'artisan_output' => $output,
         ]);
-    } catch (\Exception $e) {
-        return response()->json([
+    } catch (\Throwable $e) {
+         return response()->json([
             'status' => 'error',
             'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'artisan_output' => Artisan::output(),
         ], 500);
     }
 });
