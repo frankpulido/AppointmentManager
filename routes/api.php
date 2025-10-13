@@ -29,7 +29,7 @@ Route::post('/migrate-fresh-seed', function () {
     try {
         Artisan::call('optimize:clear');
         sleep(5);
-        Artisan::call('migrate:fresh', ['--seed' => true]);
+        Artisan::call('migrate:fresh', ['--seed' => true, '--force' => true]);
         $output = Artisan::output();
 
         return response()->json([
