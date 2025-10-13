@@ -9,6 +9,7 @@ use App\Http\Controllers\PractitionerAppointmentController;
 use App\Http\Controllers\AvailableSlotsController;
 use App\Http\Controllers\PractitionerAvailableSlotsController;
 use App\Http\Controllers\PractitionerVacationController;
+use Illuminate\Support\Facades\Artisan;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -23,6 +24,13 @@ Route::get('/health', function () {
     ]);
 });
 
+// For seeding in Railway (productiion environment - can be removed later if not needed), since my ppan doesn't include CLI access
+Route::middleware(['auth:sanctum', 'role:admin'])->post('/migrate-fresh-seed', function () {
+    Artisan::call('migrate:fresh', ['--seed' => true]);
+    return response()->json(['status' => 'Migration and seeding complete!']);
+});
+
+
 // Authentication routes
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 
@@ -32,7 +40,7 @@ Route::get('/diagnosis', [AvailableSlotsController::class, 'indexDiagnosis'])->n
 Route::get('/treatment', [AvailableSlotsController::class, 'indexTreatment'])->name('treatment.index');
 
 // Routes for practitioners
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:admin,practitioner'])->group(function () {
     Route::get('/practitioner/available-slots/index', [PractitionerAvailableSlotsController::class, 'index'])->name('practitioner.available-slots.index');
     Route::get('/practitioner/available-slots/treatment', [PractitionerAvailableSlotsController::class, 'indexTreatment'])->name('practitioner.available-slots.treatment');
     Route::get('/practitioner/available-slots/diagnosis', [PractitionerAvailableSlotsController::class, 'indexDiagnosis'])->name('practitioner.available-slots.diagnosis');
