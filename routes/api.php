@@ -62,7 +62,7 @@ Route::get('/diagnosis', [AvailableSlotsController::class, 'indexDiagnosis'])->n
 Route::get('/treatment', [AvailableSlotsController::class, 'indexTreatment'])->name('treatment.index');
 
 // Routes for practitioners
-Route::middleware(['auth:sanctum', 'role:admin,practitioner'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/practitioner/available-slots/index', [PractitionerAvailableSlotsController::class, 'index'])->name('practitioner.available-slots.index');
     Route::get('/practitioner/available-slots/treatment', [PractitionerAvailableSlotsController::class, 'indexTreatment'])->name('practitioner.available-slots.treatment');
     Route::get('/practitioner/available-slots/diagnosis', [PractitionerAvailableSlotsController::class, 'indexDiagnosis'])->name('practitioner.available-slots.diagnosis');
