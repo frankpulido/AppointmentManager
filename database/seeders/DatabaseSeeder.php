@@ -40,5 +40,13 @@ class DatabaseSeeder extends Seeder
             'role' => 'practitioner',
             'practitioner_id' => 2, // assuming Laura is the second practitioner in practitioners table
         ]);
+
+        User::updateOrCreate([
+            'username' => 'johndoe',
+            'email' => 'johndoe@mail.com',
+            'password' => Hash::make('superadmin1234'),
+            'role' => 'superadmin',
+            'practitioner_id' => null,
+        ]);
     }
 }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SuperadminController;
 use App\Http\Controllers\PractitionerAppointmentController;
 use App\Http\Controllers\AvailableSlotsController;
 use App\Http\Controllers\PractitionerAvailableSlotsController;
@@ -32,6 +33,17 @@ Route::post('/schedule', [AppointmentController::class, 'store'])->name('schedul
 Route::get('/diagnosis', [AvailableSlotsController::class, 'indexDiagnosis'])->name('diagnosis.index');
 Route::get('/treatment', [AvailableSlotsController::class, 'indexTreatment'])->name('treatment.index');
 
+// Routes for Superadmin
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/superadmin/users/store', [SuperadminController::class, 'storeUser'])->name('superadmin.users.store');
+});
+
+// Routes for Admin and Superadmin
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/admin/users-practitioners/index', [AdminController::class, 'index'])->name('admin.users-practitioners.index');
+    Route::post('/admin/practitioners/store', [AdminController::class, 'storePractitioner'])->name('admin.practitioners.store');
+});
+
 // Routes for practitioners
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/practitioner/available-slots/index', [PractitionerAvailableSlotsController::class, 'index'])->name('practitioner.available-slots.index');
@@ -51,8 +63,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/practitioner/vacations/store', [PractitionerVacationController::class, 'store'])->name('practitioners.vacations.store');
     Route::post('/practitioner/vacations/delete', [PractitionerVacationController::class, 'destroy'])->name('practitioners.vacations.destroy');
     Route::put('/practitioner/vacations/update', [PractitionerVacationController::class, 'update'])->name('practitioners.vacations.update');
-    Route::get('/admin/users-practitioners/index', [AdminController::class, 'index'])->name('admin.users-practitioners.index');
-    Route::post('/admin/practitioners/store', [AdminController::class, 'storePractitioner'])->name('admin.practitioners.store');
+
     //Route::get('/practitioner/appointments/{id}/edit', [PractitionerAppointmentController::class, 'edit'])->name('practitioner.appointments.edit');
     //Route::put('/practitioner/appointments/{id}', [PractitionerAppointmentController::class, 'update'])->name('practitioner.appointments.update');
     //Route::delete('/practitioner/appointments/{id}', [PractitionerAppointmentController::class, 'destroy'])->name('practitioner.appointments.destroy');
