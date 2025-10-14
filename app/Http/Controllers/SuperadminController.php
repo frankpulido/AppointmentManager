@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\UserCreationService;
 use App\Exceptions\UserCreationException;
+use App\Http\Requests\StoreUserRequest;
+use App\Models\User;
 
 class SuperadminController extends Controller
 {
-    public function storeUser(Request $request)
+    public function storeUser(StoreUserRequest $request)
     {
         $validated = $request->validated();
         // Logic to store a newly created user in storage

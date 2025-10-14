@@ -20,6 +20,13 @@ class StoreUserRequest extends FormRequest
         return false;
     }
 
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'role' => $this->input('role', User::DEFAULT_ROLE),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -30,8 +37,9 @@ class StoreUserRequest extends FormRequest
         return [
             'username' => 'required|string|unique:users,username',
             'email' => 'required|email|unique:users,email|regex:/^[^@]+@[^@]+\.[^@]+$/',
-            'password' => 'required|string|min:8',
-            'role' => 'required|string|in:' . implode(',', User::VALID_ROLES),
+            'role' => 'string|in:' . implode(',', User::VALID_ROLES),
+            // Password is not required when superadmin creates a user, user will set it later
+            'password' => 'sometimes|string|min:8',
         ];
     }
 
@@ -45,10 +53,10 @@ class StoreUserRequest extends FormRequest
             'email.email' => 'El email debe tener un formato de correo valido',
             'email.unique' => 'El email ya existe',
             'email.regex' => 'El email debe tener un formato de correo valido',
-            'password.required' => 'La contraseña es un campo obligatorio',
-            'password.string' => 'La contraseña debe ser una cadena de texto',
-            'password.min' => 'La contraseña debe tener al menos 8 caracteres',
-            'role.required' => 'El rol es un campo obligatorio',
+            // Password is not required when superadmin creates a user, user will set it later
+            //'password.required' => 'La contraseña es un campo obligatorio',
+            //'password.string' => 'La contraseña debe ser una cadena de texto',
+            //'password.min' => 'La contraseña debe tener al menos 8 caracteres',
             'role.string' => 'El rol debe ser una cadena de texto',
             'role.in' => 'El rol debe ser uno de los siguientes : ' . implode(', ', User::VALID_ROLES),
         ];
