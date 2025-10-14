@@ -33,7 +33,7 @@ class StorePractitionerRequest extends FormRequest
             'last_name' => 'required|string',
             'specialties' => 'array',
             'specialties.*' => 'exists:specialties,specialty_name',
-            'email' => 'required|email',
+            'email' => 'required|email|regex:/^[^@]+@[^@]+\.[^@]+$/',
             'phone' => 'required|integer',
             'user_id' => 'required|integer|exists:users,id',
         ];
