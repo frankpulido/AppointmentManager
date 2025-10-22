@@ -34,11 +34,6 @@ class AvailableTimeSlot extends Model
         'slot_date' => 'date',
     ];
 
-    public function calculatedEndTime(string $startTime): string
-    {
-        return $this->practitioner->getPractitionerSetting('treatment', $startTime);
-    }
-
     public function practitioner()
     {
         return $this->belongsTo(Practitioner::class);
