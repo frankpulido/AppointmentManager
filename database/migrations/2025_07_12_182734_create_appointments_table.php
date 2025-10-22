@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('patient_first_name');
             $table->string('patient_last_name');
             $table->string('patient_email')->nullable();
-            $table->string('patient_phone', 16)->unique(); // E.164 : max 15 digits plus optional "+" at start
+            $table->string('patient_phone', 16)->unique(); // E.164 : max 15 digits including country code plus optional "+" at start
             $table->enum('kind_of_appointment', Appointment::VALID_KINDS);
             $table->enum('status', Appointment::VALID_STATUSES)->default('scheduled');
             $table->boolean('on_line')->default(false);

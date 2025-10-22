@@ -26,7 +26,7 @@ class Practitioner extends Model
         'last_name' => 'string',
         'specialties' => 'array',
         'email' => 'string',
-        'phone' => 'integer',
+        'phone' => 'string',
         'custom_settings' => 'array',
     ];
 

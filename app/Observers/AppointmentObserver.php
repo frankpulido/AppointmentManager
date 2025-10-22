@@ -70,7 +70,7 @@ class AppointmentObserver
      */
     public function updated(Appointment $appointment): void
     {
-        //
+        // Not necesaary, appointments are either created or deleted, not updated.
     }
 
     /**
@@ -78,7 +78,7 @@ class AppointmentObserver
      */
     public function deleted(Appointment $appointment): void
     {
-        //
+        // Not necessary, we do not re-add available slots when an appointment is deleted.
     }
 
     /**
@@ -86,7 +86,7 @@ class AppointmentObserver
      */
     public function restored(Appointment $appointment): void
     {
-        //
+        // Not necessary.
     }
 
     /**
@@ -94,6 +94,6 @@ class AppointmentObserver
      */
     public function forceDeleted(Appointment $appointment): void
     {
-        //
+        // Not necessary. We do not re-add available slots when an appointment is deleted.
     }
 }

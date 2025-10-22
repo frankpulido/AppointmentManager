@@ -20,7 +20,7 @@ return new class extends Migration
             $table->json('specialties')->nullable();
             //$table->json('specialties_ids')->nullable();
             $table->string('email')->unique();
-            $table->string('phone')->unique();
+            $table->string('phone', 16)->unique(); // E.164 : max 15 digits including country code plus optional "+" at start
             $table->json('custom_settings')->nullable();
             $table->timestamps();
         });
