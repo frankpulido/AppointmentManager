@@ -3,6 +3,8 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Models\User;
 
 class StoreUserRequest extends FormRequest
@@ -60,5 +62,23 @@ class StoreUserRequest extends FormRequest
             'role.string' => 'El rol debe ser una cadena de texto',
             'role.in' => 'El rol debe ser uno de los siguientes : ' . implode(', ', User::VALID_ROLES),
         ];
+    }
+
+    protected function failedAuthorization()
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'message' => 'No autorizado para realizar esta acción'
+            ], 403)
+        );
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'message' => $validator->errors()->first()
+            ], 422)
+        );
     }
 }
