@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,7 +25,7 @@ class DatabaseSeeder extends Seeder
             WaitingListSeeder::class,
         ]);
         
-        User::UpdateOrCreate([
+        User::updateOrCreate([
             'username' => 'frankpulido',
             'email' => 'frankpulido@me.com',
             'password' => Hash::make('admin1234'),
@@ -32,12 +33,20 @@ class DatabaseSeeder extends Seeder
             'practitioner_id' => null,
         ]);
 
-        User::UpdateOrCreate([
+        User::updateOrCreate([
             'username' => 'lauradelasheras',
             'email' => 'laura@fisioterapiayosteopatiabarcelona.es',
             'password' => Hash::make('osteo1234'),
             'role' => 'practitioner',
             'practitioner_id' => 2, // assuming Laura is the second practitioner in practitioners table
+        ]);
+
+        User::updateOrCreate([
+            'username' => 'johndoe',
+            'email' => 'johndoe@mail.com',
+            'password' => Hash::make('superadmin1234'),
+            'role' => 'superadmin',
+            'practitioner_id' => null,
         ]);
     }
 }

@@ -28,10 +28,11 @@ class AppointmentController extends Controller
             return response()->json(['error' => 'Esta hora de visita no esta disponible'], 400);
         }
 
-        // Check if the patient has already made a booking
+        // Add country code (Spain only) to patient phone number
         $validated = $request->validated();
         $validated['patient_phone'] = '+34' . $validated['patient_phone'];
-
+        
+        // Check if the patient has already made a booking
         $is_already_booked_service = new IsAlreadyBookedService();
         if ($is_already_booked_service->isAlreadyBooked($validated)) {
             return response()->json(['error' => 'Ya tiene una cita programada con su especialista. Por favor, contáctenos si desea reprogramarla.'], 400);

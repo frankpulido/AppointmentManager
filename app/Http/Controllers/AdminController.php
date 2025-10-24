@@ -40,6 +40,8 @@ class AdminController extends Controller
     {
         // Logic to store a newly created practitioner in storage
         $validated = $request->validated();
+        // Add country code (Spain only) to practitioner phone number
+        $validated['phone'] = '+34' . $validated['phone'];
 
         try {
             $practitionerService = new PractitionerCreationService();

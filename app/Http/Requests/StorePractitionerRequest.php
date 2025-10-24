@@ -33,8 +33,8 @@ class StorePractitionerRequest extends FormRequest
             'last_name' => 'required|string',
             'specialties' => 'array',
             'specialties.*' => 'exists:specialties,specialty_name',
-            'email' => 'required|email',
-            'phone' => 'required|integer',
+            'email' => 'required|email|regex:/^[^@]+@[^@]+\.[^@]+$/',
+            'phone' => 'required|string|regex:/^[6-9]\d{8}$/', // Spanish phone number format (9 digits total, starting with 6,7,8 or 9)
             'user_id' => 'required|integer|exists:users,id',
         ];
     }
@@ -50,8 +50,9 @@ class StorePractitionerRequest extends FormRequest
             'specialties.*.exists' => 'Alguna de las especialidades seleccionadas no es válida',
             'email.required' => 'El email es un campo obligatorio',
             'email.email' => 'El email debe tener un formato válido',
-            'phone.required' => 'El teléfono es un campo obligatorio',
-            'phone.integer' => 'El teléfono sólo puede contener números',
+            'phone.required' => 'El teléfono del especialista es un campo obligatorio',
+            'phone.string' => 'El teléfono del especialistadebe ser una cadena de texto',
+            'phone.regex' => 'El teléfono del especialista debe contener solo números y tener 9 dígitos, comenzando con 6, 7, 8 o 9',
             'user_id.required' => 'El ID de usuario es un campo obligatorio',
             'user_id.integer' => 'El ID de usuario debe ser un número entero',
             'user_id.exists' => 'El usuario seleccionado no existe',
