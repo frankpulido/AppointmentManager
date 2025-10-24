@@ -16,12 +16,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        /*
-        $this->app->bind(
-            \App\Services\SlotJsonDelivery\SlotJsonDeliveryStrategy::class, 
-            \App\Services\SlotJsonDelivery\LocalFileStrategy::class
-        );
-        */
         $this->app->bind(SlotJsonDeliveryStrategy::class, function ($app) {
             $strategy = config('slot_json.delivery_strategy', 'local');
             

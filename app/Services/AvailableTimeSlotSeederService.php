@@ -11,9 +11,6 @@ use App\Services\IsVacationService;
 
 class AvailableTimeSlotSeederService
 {
-    //private array $timeSlotsTreatment = AvailableTimeSlot::DEFAULT_TIME_SLOTS_TREATMENT;
-    //private array $timeSlotsDiagnosis = AvailableTimeSlotDiagnosis::DEFAULT_TIME_SLOTS_DIAGNOSIS;
-
     /**
      * Seeds available time slots for Treatment appointments for the given practitioner.
      *

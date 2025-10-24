@@ -20,7 +20,6 @@ class CheckAppointmentOverlapService
     public function checkOverlap(string $date, string $start, string $end, int $practitioner_id) : bool
     {
         // We add a 15' buffer to the starting and ending times (we have to format since we receive data from form request) :
-        //$buffer = $practitioner->getPractitionerSetting('buffer_minutes');
         $buffer = Practitioner::find($practitioner_id)->getPractitionerSetting('buffer_minutes');
         $startWithBuffer = Carbon::parse($start)->subMinutes($buffer)->format('H:i:s');
         $endWithBuffer   = Carbon::parse($end)->addMinutes($buffer)->format('H:i:s');

@@ -4,7 +4,6 @@ namespace App\Services;
 // This Service creates new Practitioners
 use App\Models\Practitioner;
 use App\Models\User;
-//use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 use App\Exceptions\PractitionerCreationException;
