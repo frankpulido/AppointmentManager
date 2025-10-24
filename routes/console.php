@@ -10,7 +10,7 @@ Artisan::command('inspire', function () {
 
 // The command is scheduled to run daily at midnight and clean useless past available slots.
 // Check /app/Console/Commands/CleanPastAvailableSlots.php
-Schedule::command('slots:clean-past')->dailyAt('00:00')->runInBackground();
+Schedule::command('slots:clean-past')->dailyAt('00:01')->runInBackground();
 
 // The command is scheduled to run yearly on Jan 1st at 00:05. Seeds Holidays for year+2 and deletes past holidays.
 // Check /app/Console/Commands/RefreshHolidays.php

@@ -23,15 +23,15 @@ class CleanPastAvailableSlots extends Command
      *
      * @var string
      */
-    protected $description = 'Delete available time slots from past dates';
+    protected $description = 'Delete available time slots from now() and past dates';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $deletedTreatment = AvailableTimeSlot::whereDate('slot_date', '<', now()->toDateString())->delete();
-        $deletedDiagnosis = AvailableTimeSlotDiagnosis::whereDate('slot_date', '<', now()->toDateString())->delete();
+        $deletedTreatment = AvailableTimeSlot::whereDate('slot_date', '<=', now()->toDateString())->delete();
+        $deletedDiagnosis = AvailableTimeSlotDiagnosis::whereDate('slot_date', '<=', now()->toDateString())->delete();
         
         $total = $deletedTreatment + $deletedDiagnosis;
 
