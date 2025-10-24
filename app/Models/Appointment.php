@@ -16,6 +16,8 @@ class Appointment extends Model
     public const DEFAULT_BUFFER_MINUTES = 15;
     public const DEFAULT_DURATION_MINUTES_DIAGNOSE = 90;
     public const DEFAULT_DURATION_MINUTES_TREATMENT = 60;
+    public const DEFAULT_PRICE_EUROS_DIAGNOSE = 75;
+    public const DEFAULT_PRICE_EUROS_TREATMENT = 65;
     public const DEFAULT_MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD = 91; # maximum days ahead for online appointments of 13 weeks
     public const VALID_STATUSES = ['scheduled', 're-scheduled', 'offered', 'cancelled', 'no-show'];
     public const VALID_KINDS = ['diagnose', 'treatment'];
