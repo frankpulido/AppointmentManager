@@ -23,7 +23,7 @@ class CleanPastAvailableSlots extends Command
      *
      * @var string
      */
-    protected $description = 'Delete available time slots from now() and past dates';
+    protected $description = 'Delete available time slots from date now() and past dates';
 
     /**
      * Execute the console command.
