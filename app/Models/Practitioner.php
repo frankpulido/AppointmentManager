@@ -39,6 +39,8 @@ class Practitioner extends Model
                     'buffer_minutes' => Appointment::DEFAULT_BUFFER_MINUTES,
                     'duration_diagnosis' => Appointment::DEFAULT_DURATION_MINUTES_DIAGNOSE,
                     'duration_treatment' => Appointment::DEFAULT_DURATION_MINUTES_TREATMENT,
+                    'price_diagnosis' => Appointment::DEFAULT_PRICE_EUROS_DIAGNOSE,
+                    'price_treatment' => Appointment::DEFAULT_PRICE_EUROS_TREATMENT,
                     'max_days_ahead' => Appointment::DEFAULT_MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD,
                     'treatment_slots' => AvailableTimeSlot::DEFAULT_TIME_SLOTS_TREATMENT,
                     'diagnosis_slots' => AvailableTimeSlotDiagnosis::DEFAULT_TIME_SLOTS_DIAGNOSIS,

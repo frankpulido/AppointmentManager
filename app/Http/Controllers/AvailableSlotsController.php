@@ -13,7 +13,7 @@ class AvailableSlotsController extends Controller
     {
         // Logic to display available slots for Diagnosis, 90-minute appointments
         $practitioners = Practitioner::get()->mapWithKeys(function($p) {
-            return [$p->id => $p->first_name . ' ' . $p->last_name];
+            return [$p->id => [$p->first_name . ' ' . $p->last_name, $p->custom_settings['price_diagnosis']]];
         })->toArray();
         
         $all_diagnosis_slots = AvailableTimeSlotDiagnosis::with('practitioner')->get();
@@ -27,32 +27,8 @@ class AvailableSlotsController extends Controller
         })
         ->groupBy('practitioner_id');
 
-        /*
-        $practitioners_availability = Practitioner::all();
-        $available_diagnosis_slots_by_practitioner = collect();
-        foreach($practitioners_availability as $practitioner) {
-            $max_days_ahead = $practitioner->getPractitionerSetting('max_days_ahead');
-            $slots = AvailableTimeSlotDiagnosis::query()
-                ->where('practitioner_id', $practitioner->id)
-                ->where('slot_date', '<=', now()->addDays($max_days_ahead)->toDateString())
-                ->get();
-            $available_diagnosis_slots_by_practitioner->put($practitioner->id, $slots);
-        }
-
-        $available_diagnosis_slots_by_practitioner_array = $available_diagnosis_slots_by_practitioner->toArray();
-        */
-
         return response()->json([
             'practitioners' => $practitioners,
-            /*
-            'available_slots_diagnose' =>  $available_diagnosis_slots_by_practitioner->only([
-                'id',
-                'practitioner_id',
-                'slot_date',
-                'slot_start_time',
-                'slot_end_time',
-            ])],
-            */
             'available_slots_diagnose' =>  $available_diagnosis_slots_by_practitioner->toArray()],
             200
         );
@@ -62,7 +38,7 @@ class AvailableSlotsController extends Controller
     {
         // Logic to display available slots for Treatment, 60-minute appointments
         $practitioners = Practitioner::get()->mapWithKeys(function($p) {
-            return [$p->id => $p->first_name . ' ' . $p->last_name];
+            return [$p->id => [$p->first_name . ' ' . $p->last_name, $p->custom_settings['price_treatment']]];
         })->toArray();
 
         $all_treatment_slots = AvailableTimeSlot::with('practitioner')->get();
@@ -75,21 +51,6 @@ class AvailableSlotsController extends Controller
             $slot->makeHidden('practitioner');
         })
         ->groupBy('practitioner_id');
-
-        /*
-        $practitioners_availability = Practitioner::all();
-        $availableSlotsTreatment = collect();
-        foreach($practitioners_availability as $practitioner) {
-            $max_days_ahead = $practitioner->getPractitionerSetting('max_days_ahead');
-            $slots = AvailableTimeSlot::query()
-                ->where('practitioner_id', $practitioner->id)
-                ->where('slot_date', '<=', now()->addDays($max_days_ahead)->toDateString())
-                ->get();
-            $availableSlotsTreatment->put($practitioner->id, $slots);
-        }
-
-        $availableSlotsTreatmentFiltered = $availableSlotsTreatment->toArray();
-        */
 
         return response()->json([
             'practitioners' => $practitioners,

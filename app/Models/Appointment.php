@@ -69,33 +69,6 @@ class Appointment extends Model
         );
     }
 
-    /*
-    protected function patientPhone(): Attribute
-    {
-        return Attribute::make(
-            set: fn($value) => preg_replace('/[\s\-]/', '', $value) // removes spaces and dashes
-        );
-    }
-    */
-
-    // Method below moved to Practitioner Model
-    // and modified to be non-static and use practitioner's setting
-    // as duration may vary between practitioners
-    // and also to avoid passing practitioner_id each time
-    // and also to avoid querying Practitioner each time
-    /*
-    public function calculateEndTime(string $kind, string $startTime): string
-    {
-        $minutes = $kind === 'diagnose'
-            ? $this->practitioner->getPractitionerSetting('duration_diagnosis')
-            : $this->practitioner->getPractitionerSetting('duration_treatment');
-
-        return Carbon::parse($startTime)
-            ->addMinutes($minutes)
-            ->format('H:i:s');
-    }
-    */
-
     public function practitioner()
     {
         return $this->belongsTo(Practitioner::class);
