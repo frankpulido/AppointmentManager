@@ -54,7 +54,7 @@ class StoreAppointmentWebRequest extends FormRequest
             // Calculated by Controller : 'appointment_end_time' => 'required|date_format:H:i:s|after:appointment_start_time',
             'patient_first_name' => 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
             'patient_last_name'=> 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
-            'patient_email' => 'email|max:50',
+            'patient_email' => 'email|max:50|regex:/^[^@]+@[^@]+\.[^@]+$/',
             'patient_phone' => 'required|string|regex:/^[6-9]\d{8}$/', // Spanish phone number format (9 digits total, starting with 6,7,8 or 9)
             'kind_of_appointment' => 'required|in:' . implode(',', Appointment::VALID_KINDS),
             'status' => 'in:' . implode(',', Appointment::VALID_STATUSES),

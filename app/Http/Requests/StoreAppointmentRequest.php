@@ -38,7 +38,7 @@ class StoreAppointmentRequest extends FormRequest
             //'appointment_end_time' => 'required|date_format:H:i:s|after:appointment_start_time',
             'patient_first_name' => 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
             'patient_last_name'=> 'required|string|max:30|regex:/^[a-zA-Z\s]+$/',
-            'patient_email' => 'email|max:50',
+            'patient_email' => 'email|max:50|regex:/^[^@]+@[^@]+\.[^@]+$/',
             'patient_phone' => [
                 'required',
                 'string',
