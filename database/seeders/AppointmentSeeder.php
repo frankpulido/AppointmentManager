@@ -2,12 +2,10 @@
 declare(strict_types=1);
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\AvailableTimeSlot;
 use App\Models\Appointment;
 use App\Services\AppointmentCreationService;
-use Carbon\Carbon;
 
 class AppointmentSeeder extends Seeder
 {
