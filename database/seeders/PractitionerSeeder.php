@@ -20,11 +20,11 @@ class PractitionerSeeder extends Seeder
             'phone' => '653343353'
         ]);
         Practitioner::create([
-            'first_name' => 'Laura',
-            'last_name' => 'de las Heras Cuesta',
+            'first_name' => 'Jane',
+            'last_name' => 'Doe',
             'specialties' => ['osteopata', 'fisioterapeuta', 'fisioterapeuta deportivo'],
-            'email' => 'laura@fisioterapiayosteopatiabarcelona.es',
-            'phone' => '677389143'
+            'email' => 'janedoe@practitioner.com',
+            'phone' => '677888999'
         ]);
     }
 }
