@@ -34,8 +34,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::updateOrCreate([
-            'username' => 'lauradelasheras',
-            'email' => 'laura@fisioterapiayosteopatiabarcelona.es',
+            'username' => 'janedoe',
+            'email' => 'janedoe@practitioner.com',
             'password' => Hash::make('osteo1234'),
             'role' => 'practitioner',
             'practitioner_id' => 2, // assuming Laura is the second practitioner in practitioners table
@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
 
         User::updateOrCreate([
             'username' => 'johndoe',
-            'email' => 'johndoe@mail.com',
+            'email' => 'johndoe@superadmin.com',
             'password' => Hash::make('superadmin1234'),
             'role' => 'superadmin',
             'practitioner_id' => null,

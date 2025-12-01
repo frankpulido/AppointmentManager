@@ -71,31 +71,36 @@ Laravel 12 API for appointment management serving two frontends:
 
 ## Pending Phases
 
-### Phase 6: User Customization System
+### Phase 6: User Customization System (PARTIALLY COMPLETE)
 **Goal:** Practitioner-specific configurations
 
-**Current System Constants (To Be Made Configurable):**
-```php
-// Default time slots for each practitioner
-AvailableTimeSlot::DEFAULT_TIME_SLOTS_TREATMENT
-AvailableTimeSlotDiagnosis::DEFAULT_TIME_SLOTS_DIAGNOSIS
+**✅ Completed Components:**
+- Database schema with `custom_settings` JSON column in `practitioners` table
+- Model integration with automatic defaults on practitioner creation
+- `getPractitionerSetting()` method for settings retrieval
+- `calculateEndTime()` method using practitioner-specific durations
+- Service layer integration (seeder, overlap checker, booking validator)
+- Auto-populated defaults:
+  - `buffer_minutes` (15)
+  - `duration_diagnosis` (90)
+  - `duration_treatment` (60)
+  - `price_diagnosis` (€75)
+  - `price_treatment` (€65)
+  - `max_days_ahead` (91 days)
+  - `treatment_slots` (8 daily slots)
+  - `diagnosis_slots` (6 daily slots)
+- `specialties` field with array casting
 
-// Appointment settings
-Appointment::BUFFER_MINUTES                      // Time buffer between appointments
-Appointment::DURATION_MINUTES_DIAGNOSE           // Default diagnosis duration
-Appointment::DURATION_MINUTES_TREATMENT          // Default treatment duration
-Appointment::MAX_ONLINE_APPOINTMENTS_DAYS_AHEAD  // Online booking limit (currently 91 days)
+**❌ Pending Implementation:**
+- CRUD endpoints for managing `custom_settings`:
+  - GET `/superadmin/practitioners/{id}/settings` - Retrieve current settings
+  - PUT/PATCH `/superadmin/practitioners/{id}/settings` - Update settings
+- Form Request validation for settings changes
+- Settings update service with validation logic
+- Slot regeneration on settings changes (when treatment/diagnosis slots modified)
+- Documentation for settings schema and validation rules
 
-// NOT CREATED YET:
-Practitioner::SPECIALTIES                        // json [fisioterapeuta, osteópata]
-```
-
-**Features:**
-- Practitioner-specific time slot configurations
-- Customizable appointment durations and buffers
-- Configurable online booking limits
-- Settings management interface
-- **Note:** Endpoints reserved for superadmin use (Phase 8)
+**Note:** Settings management endpoints reserved for superadmin use (Phase 8)
 
 ### Phase 7: Subscribable Calendars (iCal/ICS)
 **Goal:** Calendar integration for practitioners
