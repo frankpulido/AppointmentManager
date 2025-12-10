@@ -6,6 +6,28 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * App\Models\AvailableTimeSlot
+ *
+ * @property int $id
+ * @property int $practitioner_id
+ * @property \Illuminate\Support\Carbon $slot_date
+ * @property string $slot_start_time
+ * @property string $slot_end_time
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Practitioner $practitioner
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlot newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlot newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlot query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlot whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlot whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlot wherePractitionerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlot whereSlotDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlot whereSlotEndTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlot whereSlotStartTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlot whereUpdatedAt($value)
+ */
 class AvailableTimeSlot extends Model
 {
     use HasFactory;

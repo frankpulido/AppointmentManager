@@ -1,0 +1,2309 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Appointments Manager API Documentation",
+        "description": "API documentation for the Appointments Manager application.",
+        "contact": {
+            "email": "hello@frankpulido.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api",
+            "description": "Local Development Server"
+        },
+        {
+            "url": "https://appointmentmanager-production-5057.up.railway.app/api",
+            "description": "Production Server"
+        }
+    ],
+    "paths": {
+        "/admin": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get all users and practitioners (Admin only)",
+                "description": "Retrieve a list of all users and practitioners. Accessible only by admin and superadmin roles.",
+                "operationId": "b98d5a6c1c4f20528f46a517079573ed",
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of users and practitioners",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "users": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "example": "BxL2B@example.com"
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "example": "admin"
+                                                    },
+                                                    "is_active": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "practitioners": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "example": "BxL2B@example.com"
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "example": "practitioner"
+                                                    },
+                                                    "is_active": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized access",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No autorizado para realizar esta acción"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error message"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/practitioners": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Create a new practitioner (Admin only)",
+                "description": "Create a new practitioner in the system. Accessible only by admin and superadmin roles.",
+                "operationId": "b0a9bf4a0ae207a7d4c4a5a3483ad9f8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Dr. Jane Smith"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "BxL2B@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "practitioner"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    },
+                                    "country": {
+                                        "type": "string",
+                                        "example": "Spain"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Madrid"
+                                    },
+                                    "postal_code": {
+                                        "type": "string",
+                                        "example": "28001"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "Calle Mayor, 1"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Practitioner created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profesional creado con éxito"
+                                        },
+                                        "practitioner": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Dr. Jane Smith"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "BxL2B@example.com"
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "example": "practitioner"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error message"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/appointments": {
+            "post": {
+                "tags": [
+                    "Appointment"
+                ],
+                "summary": "Create a new appointment",
+                "description": "Endpoint to create a new appointment for diagnosis or treatment.",
+                "operationId": "0cfd7a3482605b745b634d591966d8bf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "practitioner_id",
+                                    "kind_of_appointment",
+                                    "appointment_date",
+                                    "appointment_start_time",
+                                    "patient_first_name",
+                                    "patient_last_name",
+                                    "patient_email",
+                                    "patient_phone"
+                                ],
+                                "properties": {
+                                    "practitioner_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "kind_of_appointment": {
+                                        "type": "string",
+                                        "example": "diagnose"
+                                    },
+                                    "appointment_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-07-15"
+                                    },
+                                    "appointment_start_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "10:00:00"
+                                    },
+                                    "patient_first_name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "patient_last_name": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "patient_email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "BxL2B@example.com"
+                                    },
+                                    "patient_phone": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Appointment created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Su cita ha sido reservada con éxito"
+                                        },
+                                        "appointment": {
+                                            "properties": {
+                                                "kind_of_appointment": {
+                                                    "type": "string",
+                                                    "example": "diagnose"
+                                                },
+                                                "appointment_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2024-07-15"
+                                                },
+                                                "appointment_start_time": {
+                                                    "type": "string",
+                                                    "format": "time",
+                                                    "example": "10:00:00"
+                                                },
+                                                "patient_first_name": {
+                                                    "type": "string",
+                                                    "example": "John"
+                                                },
+                                                "patient_last_name": {
+                                                    "type": "string",
+                                                    "example": "Doe"
+                                                },
+                                                "patient_email": {
+                                                    "type": "string",
+                                                    "format": "email",
+                                                    "example": "BxL2B@example.com"
+                                                },
+                                                "patient_phone": {
+                                                    "type": "string",
+                                                    "example": "123456789"
+                                                },
+                                                "practitioner_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "pending"
+                                                },
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-03-17T19:23:41.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-03-17T19:23:41.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Esta hora de visita no esta disponible"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "La cita solicitada se superpone con una cita existente."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "properties": {
+                                                "patient_phone": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "El campo patient_phone es obligatorio."
+                                                    }
+                                                },
+                                                "patient_email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "El campo patient_email es obligatorio."
+                                                    }
+                                                },
+                                                "patient_first_name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "El campo patient_first_name es obligatorio."
+                                                    }
+                                                },
+                                                "patient_last_name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "El campo patient_last_name es obligatorio."
+                                                    }
+                                                },
+                                                "kind_of_appointment": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "El campo kind_of_appointment es obligatorio."
+                                                    }
+                                                },
+                                                "appointment_date": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "El campo appointment_date es obligatorio."
+                                                    }
+                                                },
+                                                "appointment_start_time": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "El campo appointment_start_time es obligatorio."
+                                                    }
+                                                },
+                                                "practitioner_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "El campo practitioner_id es obligatorio."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "User Login",
+                "description": "Authenticate user and return an access token.",
+                "operationId": "8cb7742ae98d0990acb2907c4e00bf24",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "HdXbP@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login exitoso"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|qwertyuiopasdfghjklzxcvbnm1234567890"
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "HdXbP@example.com"
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "example": "student"
+                                                },
+                                                "practitioner_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Credenciales incorrectas"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/available-slots/diagnosis": {
+            "get": {
+                "tags": [
+                    "AvailableSlots"
+                ],
+                "summary": "Get Available Slots for Diagnosis (90-minute appointments)",
+                "description": "Retrieve available time slots for Diagnosis appointments grouped by practitioner.",
+                "operationId": "f178a2011b70986d180181425e274f3d",
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of available diagnosis slots",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "practitioners": {
+                                            "description": "List of practitioners with their IDs, names, and diagnosis prices",
+                                            "type": "object"
+                                        },
+                                        "available_slots_diagnose": {
+                                            "description": "Available diagnosis slots grouped by practitioner ID",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/available-slots/treatment": {
+            "get": {
+                "tags": [
+                    "AvailableSlots"
+                ],
+                "summary": "Get Available Slots for Treatment (60-minute appointments)",
+                "description": "Retrieve available time slots for Treatment appointments grouped by practitioner.",
+                "operationId": "b1475f8c6c3f17711ac2b25b5d334cfe",
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of available treatment slots",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "practitioners": {
+                                            "description": "List of practitioners with their IDs, names, and treatment prices",
+                                            "type": "object"
+                                        },
+                                        "available_slots_treatment": {
+                                            "description": "Available treatment slots grouped by practitioner ID",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/practitioner/appointments": {
+            "get": {
+                "tags": [
+                    "PractitionerAppointment"
+                ],
+                "summary": "Get all appointments for the authenticated practitioner",
+                "description": "Retrieve a list of all appointments for the logged-in practitioner. Admins can see all appointments.",
+                "operationId": "747ab1d8e905dbea9eaa140451c833c3",
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of appointments",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "practitioners": {
+                                            "type": "object",
+                                            "example": {
+                                                "1": "John Doe",
+                                                "2": "Jane Smith"
+                                            }
+                                        },
+                                        "appointments": {
+                                            "type": "object",
+                                            "example": {
+                                                "1": [
+                                                    {
+                                                        "id": 1,
+                                                        "practitioner_id": 1,
+                                                        "kind_of_appointment": "diagnose",
+                                                        "appointment_date": "2024-07-15",
+                                                        "appointment_start_time": "10:00:00",
+                                                        "appointment_end_time": "10:30:00",
+                                                        "patient_first_name": "John",
+                                                        "patient_last_name": "Doe",
+                                                        "patient_email": "BxL2B@example.com",
+                                                        "patient_phone": "123456789",
+                                                        "status": "pending"
+                                                    },
+                                                    {
+                                                        "id": 2,
+                                                        "practitioner_id": 1,
+                                                        "kind_of_appointment": "diagnose",
+                                                        "appointment_date": "2024-07-15",
+                                                        "appointment_start_time": "11:00:00",
+                                                        "appointment_end_time": "11:30:00",
+                                                        "patient_first_name": "Jane",
+                                                        "patient_last_name": "Smith",
+                                                        "patient_email": "Ktq9t@example.com",
+                                                        "patient_phone": "987654321",
+                                                        "status": "pending"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "PractitionerAppointment"
+                ],
+                "summary": "Create a new appointment",
+                "description": "Endpoint to create a new appointment for diagnosis or treatment.",
+                "operationId": "c45074bcdc439c3ba39a276e8a50408b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "practitioner_id",
+                                    "kind_of_appointment",
+                                    "appointment_date",
+                                    "appointment_start_time",
+                                    "patient_first_name",
+                                    "patient_last_name",
+                                    "patient_email",
+                                    "patient_phone"
+                                ],
+                                "properties": {
+                                    "practitioner_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "kind_of_appointment": {
+                                        "type": "string",
+                                        "example": "diagnose"
+                                    },
+                                    "appointment_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-07-15"
+                                    },
+                                    "appointment_start_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "10:00:00"
+                                    },
+                                    "patient_first_name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "patient_last_name": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "patient_email": {
+                                        "type": "string",
+                                        "example": "BxL2B@example.com"
+                                    },
+                                    "patient_phone": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Appointment created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Su cita ha sido reservada con éxito"
+                                        },
+                                        "appointment": {
+                                            "properties": {
+                                                "kind_of_appointment": {
+                                                    "type": "string",
+                                                    "example": "diagnose"
+                                                },
+                                                "appointment_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2024-07-15"
+                                                },
+                                                "appointment_start_time": {
+                                                    "type": "string",
+                                                    "format": "time",
+                                                    "example": "10:00:00"
+                                                },
+                                                "patient_first_name": {
+                                                    "type": "string",
+                                                    "example": "John"
+                                                },
+                                                "patient_last_name": {
+                                                    "type": "string",
+                                                    "example": "Doe"
+                                                },
+                                                "patient_email": {
+                                                    "type": "string",
+                                                    "format": "email",
+                                                    "example": "BxL2B@example.com"
+                                                },
+                                                "patient_phone": {
+                                                    "type": "string",
+                                                    "example": "123456789"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "pending"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Overlap detected for the requested appointment time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Esta hora de visita no esta disponible"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error message"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "PractitionerAppointment"
+                ],
+                "summary": "Delete an appointment",
+                "description": "Endpoint to delete an existing appointment.",
+                "operationId": "5a1f337e6aae2a2b39fb1c2816b90cea",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "practitioner_id",
+                                    "appointment_id"
+                                ],
+                                "properties": {
+                                    "practitioner_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "appointment_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Appointment deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "La reserva de visita ha sido eliminada con éxito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Appointment not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "La reserva de visita indicada no existe"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/practitioner/appointments/{id}": {
+            "get": {
+                "tags": [
+                    "PractitionerAppointments"
+                ],
+                "summary": "Get a specific appointment",
+                "description": "Retrieve details of a specific appointment",
+                "operationId": "3d9ce82aa7564a2b569fac1a9b3f53ac",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the appointment to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of appointment",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "practitioner_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "kind_of_appointment": {
+                                            "type": "string",
+                                            "example": "diagnose"
+                                        },
+                                        "appointment_date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2024-07-15"
+                                        },
+                                        "appointment_start_time": {
+                                            "type": "string",
+                                            "format": "time",
+                                            "example": "10:00:00"
+                                        },
+                                        "appointment_end_time": {
+                                            "type": "string",
+                                            "format": "time",
+                                            "example": "10:30:00"
+                                        },
+                                        "patient_first_name": {
+                                            "type": "string",
+                                            "example": "John"
+                                        },
+                                        "patient_last_name": {
+                                            "type": "string",
+                                            "example": "Doe"
+                                        },
+                                        "patient_email": {
+                                            "type": "string",
+                                            "example": "BxL2B@example.com"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "pending"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Appointment not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "La reserva de visita indicada no existe"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "PractitionerAppointment"
+                ],
+                "summary": "Update an existing appointment",
+                "description": "Endpoint to update patient data and/or kind of appointment for an existing appointment.",
+                "operationId": "1500c5aa739a5fa47ba46ba87c4d5269",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the appointment to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "patient_first_name",
+                                    "patient_last_name",
+                                    "patient_phone",
+                                    "kind_of_appointment"
+                                ],
+                                "properties": {
+                                    "patient_first_name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "patient_last_name": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "patient_email": {
+                                        "type": "string",
+                                        "example": "BxL2B@example.com"
+                                    },
+                                    "patient_phone": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    },
+                                    "kind_of_appointment": {
+                                        "type": "string",
+                                        "example": "diagnose"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Appointment updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "La reserva de visita ha sido actualizada con éxito"
+                                        },
+                                        "appointment": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "practitioner_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "kind_of_appointment": {
+                                                    "type": "string",
+                                                    "example": "diagnose"
+                                                },
+                                                "appointment_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2024-07-15"
+                                                },
+                                                "appointment_start_time": {
+                                                    "type": "string",
+                                                    "format": "time",
+                                                    "example": "10:00:00"
+                                                },
+                                                "appointment_end_time": {
+                                                    "type": "string",
+                                                    "format": "time",
+                                                    "example": "10:30:00"
+                                                },
+                                                "patient_first_name": {
+                                                    "type": "string",
+                                                    "example": "John"
+                                                },
+                                                "patient_last_name": {
+                                                    "type": "string",
+                                                    "example": "Doe"
+                                                },
+                                                "patient_email": {
+                                                    "type": "string",
+                                                    "example": "BxL2B@example.com"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "pending"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Appointment not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "La reserva de visita indicada no existe"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Overlap detected for the requested appointment time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/practitioner/appointments/search-by-datetime": {
+            "post": {
+                "tags": [
+                    "PractitionerAppointment"
+                ],
+                "summary": "Search appointments by date, time, and kind",
+                "description": "Endpoint to search for appointments based on date, time, and kind of appointment for a specific practitioner.",
+                "operationId": "cb92de5fa742666a539980f4f8e4cec4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "practitioner_id",
+                                    "appointment_date",
+                                    "appointment_start_time",
+                                    "appointment_end_time",
+                                    "kind_of_appointment"
+                                ],
+                                "properties": {
+                                    "practitioner_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "appointment_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-07-15"
+                                    },
+                                    "appointment_start_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "10:00:00"
+                                    },
+                                    "appointment_end_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "10:30:00"
+                                    },
+                                    "kind_of_appointment": {
+                                        "type": "string",
+                                        "example": "diagnose"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of appointments",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "appointments": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "practitioner_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "kind_of_appointment": {
+                                                        "type": "string",
+                                                        "example": "diagnose"
+                                                    },
+                                                    "appointment_date": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2024-07-15"
+                                                    },
+                                                    "appointment_start_time": {
+                                                        "type": "string",
+                                                        "format": "time",
+                                                        "example": "10:00:00"
+                                                    },
+                                                    "appointment_end_time": {
+                                                        "type": "string",
+                                                        "format": "time",
+                                                        "example": "10:30:00"
+                                                    },
+                                                    "patient_first_name": {
+                                                        "type": "string",
+                                                        "example": "John"
+                                                    },
+                                                    "patient_last_name": {
+                                                        "type": "string",
+                                                        "example": "Doe"
+                                                    },
+                                                    "patient_email": {
+                                                        "type": "string",
+                                                        "example": "BxL2B@example.com"
+                                                    },
+                                                    "patient_phone": {
+                                                        "type": "string",
+                                                        "example": "123456789"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "pending"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/practitioner/appointments/search-by-patient-name": {
+            "post": {
+                "tags": [
+                    "PractitionerAppointment"
+                ],
+                "summary": "Search appointments by patient name",
+                "description": "Endpoint to search for appointments based on patient first and last name for a specific practitioner.",
+                "operationId": "1966af39756694c5cea403013b991169",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "practitioner_id",
+                                    "patient_first_name",
+                                    "patient_last_name"
+                                ],
+                                "properties": {
+                                    "practitioner_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "patient_first_name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "patient_last_name": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of appointments",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "appointments": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "practitioner_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "kind_of_appointment": {
+                                                        "type": "string",
+                                                        "example": "diagnose"
+                                                    },
+                                                    "appointment_date": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2024-07-15"
+                                                    },
+                                                    "appointment_start_time": {
+                                                        "type": "string",
+                                                        "format": "time",
+                                                        "example": "10:00:00"
+                                                    },
+                                                    "appointment_end_time": {
+                                                        "type": "string",
+                                                        "format": "time",
+                                                        "example": "10:30:00"
+                                                    },
+                                                    "patient_first_name": {
+                                                        "type": "string",
+                                                        "example": "John"
+                                                    },
+                                                    "patient_last_name": {
+                                                        "type": "string",
+                                                        "example": "Doe"
+                                                    },
+                                                    "patient_email": {
+                                                        "type": "string",
+                                                        "example": "BxL2B@example.com"
+                                                    },
+                                                    "patient_phone": {
+                                                        "type": "string",
+                                                        "example": "123456789"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "pending"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/practitioner/available-slots": {
+            "get": {
+                "tags": [
+                    "PractitionerAvailableSlots"
+                ],
+                "summary": "Get Available Slots for Practitioner",
+                "description": "Retrieve available time slots for the authenticated practitioner.",
+                "operationId": "f10ce9e0b82776b85488cd8f72d43d79",
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of available slots",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "practitioners": {
+                                            "description": "List of practitioners with their IDs and names",
+                                            "type": "object"
+                                        },
+                                        "treatment_available_slots": {
+                                            "description": "Available treatment slots grouped by practitioner ID",
+                                            "type": "object"
+                                        },
+                                        "diagnose_available_slots": {
+                                            "description": "Available diagnosis slots grouped by practitioner ID",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "PractitionerAvailableSlots"
+                ],
+                "summary": "Create a new available slot for Practitioner",
+                "description": "Endpoint to create a new available time slot for the authenticated practitioner.",
+                "operationId": "9d4d198b00cde765fbcd55ae82f8ae16",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "practitioner_id",
+                                    "kind_of_appointment",
+                                    "slot_date",
+                                    "slot_start_time"
+                                ],
+                                "properties": {
+                                    "practitioner_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "kind_of_appointment": {
+                                        "type": "string",
+                                        "example": "diagnose"
+                                    },
+                                    "slot_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-07-15"
+                                    },
+                                    "slot_start_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "10:00:00"
+                                    },
+                                    "slot_end_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "11:30:00",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Available slot created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "La hora disponible de visita ha sido creada con éxito"
+                                        },
+                                        "slot": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "practitioner_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "slot_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2024-07-15"
+                                                },
+                                                "slot_start_time": {
+                                                    "type": "string",
+                                                    "format": "time",
+                                                    "example": "10:00:00"
+                                                },
+                                                "slot_end_time": {
+                                                    "type": "string",
+                                                    "format": "time",
+                                                    "example": "11:30:00"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-03-17T19:23:41.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-03-17T19:23:41.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "La fecha y hora indicadas se solapan con una cita existente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "PractitionerAvailableSlots"
+                ],
+                "summary": "Delete an available slot for Practitioner",
+                "description": "Endpoint to delete an available time slot for the authenticated practitioner.",
+                "operationId": "a8cc675ca574c0d3fe2f7508c87e6a53",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "practitioner_id",
+                                    "kind_of_appointment",
+                                    "slot_id"
+                                ],
+                                "properties": {
+                                    "practitioner_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "kind_of_appointment": {
+                                        "type": "string",
+                                        "example": "diagnose"
+                                    },
+                                    "slot_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Available slot deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "La hora disponible de visita ha sido eliminada con éxito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Available slot not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "La hora disponible de visita indicada no existe"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/practitioner/available-slots/treatment": {
+            "get": {
+                "tags": [
+                    "PractitionerAvailableSlots"
+                ],
+                "summary": "Get Available Slots for Treatment (60-minute appointments) for Practitioner",
+                "description": "Retrieve available time slots for Treatment appointments for the authenticated practitioner.",
+                "operationId": "5cf049b863512b4603bdc6692552362a",
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of available treatment slots",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "practitioners": {
+                                            "description": "List of practitioners with their IDs and names",
+                                            "type": "object"
+                                        },
+                                        "treatment_available_slots": {
+                                            "description": "Available treatment slots grouped by practitioner ID",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/practitioner/available-slots/diagnosis": {
+            "get": {
+                "tags": [
+                    "PractitionerAvailableSlots"
+                ],
+                "summary": "Get Available Slots for Diagnosis (30-minute appointments) for Practitioner",
+                "description": "Retrieve available time slots for Diagnosis appointments for the authenticated practitioner.",
+                "operationId": "c9caaa1f192cee2a89c94f1a5f0631a7",
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of available diagnosis slots",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "practitioners": {
+                                            "description": "List of practitioners with their IDs and names",
+                                            "type": "object"
+                                        },
+                                        "diagnose_available_slots": {
+                                            "description": "Available diagnosis slots grouped by practitioner ID",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/practitioner/available-slots/seed": {
+            "post": {
+                "tags": [
+                    "PractitionerAvailableSlots"
+                ],
+                "summary": "Seed Available Slots for Practitioner",
+                "description": "Endpoint to seed available time slots for the authenticated practitioner over a specified date range.",
+                "operationId": "ed885d89e084f00f9c629b887aab8e50",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "practitioner_id",
+                                    "slots_start_date"
+                                ],
+                                "properties": {
+                                    "practitioner_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "slots_start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-07-01"
+                                    },
+                                    "slots_end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-07-31",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Available slots seeded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Las horas disponibles de visita han sido generadas con éxito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/practitioner-vacations": {
+            "get": {
+                "tags": [
+                    "PractitionerVacation"
+                ],
+                "summary": "Get vacations for practitioners",
+                "description": "Retrieve a list of vacations for practitioners. Admins can see all practitioners' vacations, while practitioners can see only their own.",
+                "operationId": "618e2a3a287246a91f99ceeaf6e056b8",
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of vacations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "practitioners": {
+                                            "description": "List of practitioners with their IDs and names",
+                                            "type": "object",
+                                            "example": {
+                                                "1": "John Doe",
+                                                "2": "Jane Smith"
+                                            }
+                                        },
+                                        "vacations": {
+                                            "description": "Vacations grouped by practitioner ID",
+                                            "type": "object",
+                                            "example": {
+                                                "1": [
+                                                    {
+                                                        "id": 1,
+                                                        "practitioner_id": 1,
+                                                        "start_date": "2024-08-01",
+                                                        "end_date": "2024-08-10",
+                                                        "created_at": "2024-07-01T12:00:00Z",
+                                                        "updated_at": "2024-07-01T12:00:00Z"
+                                                    }
+                                                ],
+                                                "2": [
+                                                    {
+                                                        "id": 2,
+                                                        "practitioner_id": 2,
+                                                        "start_date": "2024-09-05",
+                                                        "end_date": "2024-09-15",
+                                                        "created_at": "2024-07-02T12:00:00Z",
+                                                        "updated_at": "2024-07-02T12:00:00Z"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "PractitionerVacation"
+                ],
+                "summary": "Update a vacation period for a practitioner",
+                "description": "Update a vacation period for a practitioner.",
+                "operationId": "3a147b62fe95840b3087ecea06d3f2c7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "practitioner_id",
+                                    "vacation_id",
+                                    "start_date",
+                                    "end_date"
+                                ],
+                                "properties": {
+                                    "practitioner_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "vacation_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-08-05"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-08-15"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vacation updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El período de vacaciones se ha actualizado con éxito"
+                                        },
+                                        "vacation": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "practitioner_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "start_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2024-08-05"
+                                                },
+                                                "end_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2024-08-15"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-07-01T12:00:00Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-07-10T12:00:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Vacation not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Vacation not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to update vacation"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "PractitionerVacation"
+                ],
+                "summary": "Create a new vacation period for a practitioner",
+                "description": "Create a new vacation period for a practitioner.",
+                "operationId": "7d336e1f1d5abddb6e872eff455b8692",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "practitioner_id",
+                                    "start_date",
+                                    "end_date"
+                                ],
+                                "properties": {
+                                    "practitioner_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-08-01"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-08-10"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Vacation created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El período de vacaciones se ha creado con éxito"
+                                        },
+                                        "vacation": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "practitioner_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "start_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2024-08-01"
+                                                },
+                                                "end_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2024-08-10"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-07-01T12:00:00Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-07-01T12:00:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to create vacation"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "PractitionerVacation"
+                ],
+                "summary": "Delete a vacation period for a practitioner",
+                "description": "Delete a vacation period for a practitioner.",
+                "operationId": "4bf2ccb436602a1e8f6ebc688295d8c7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "practitioner_id",
+                                    "vacation_id"
+                                ],
+                                "properties": {
+                                    "practitioner_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "vacation_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vacation deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El período de vacaciones se ha eliminado con éxito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/superadmin/users": {
+            "post": {
+                "tags": [
+                    "Superadmin"
+                ],
+                "summary": "Create a new user (Superadmin only)",
+                "description": "Endpoint to create a new user. Accessible only by superadmin role.",
+                "operationId": "90dc436c6b8c3df1fcd95450d780aef5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "role"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Jane Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "bBz7o@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "superadmin"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario creado con éxito"
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Jane Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "format": "email",
+                                                    "example": "bBz7o@example.com"
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "example": "superadmin"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-07-01T12:00:00Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-07-01T12:00:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error message"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Admin",
+            "description": "Administrative Endpoints for Managing Users and Practitioners"
+        },
+        {
+            "name": "Appointment",
+            "description": "Endpoints for Creating and Managing Appointments"
+        },
+        {
+            "name": "Auth",
+            "description": "Authentication Endpoints"
+        },
+        {
+            "name": "AvailableSlots",
+            "description": "Endpoints for Retrieving Available Time Slots for Diagnosis and Treatment"
+        },
+        {
+            "name": "PractitionerAppointment",
+            "description": "Endpoints for Practitioners to Manage Their Appointments"
+        },
+        {
+            "name": "PractitionerAvailableSlots",
+            "description": "Endpoints for Practitioners to Manage Their Available Time Slots"
+        },
+        {
+            "name": "PractitionerVacation",
+            "description": "Endpoints for Managing Practitioner Vacations"
+        },
+        {
+            "name": "Superadmin",
+            "description": "Superadmin Endpoints for Managing Users"
+        },
+        {
+            "name": "PractitionerAppointments",
+            "description": "PractitionerAppointments"
+        }
+    ]
+}

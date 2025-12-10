@@ -7,8 +7,40 @@ use App\Models\AvailableTimeSlot;
 use App\Models\Practitioner;
 //use App\Models\Appointment;
 
+/**
+ * @OA\Tag(
+ *     name="AvailableSlots",
+ *     description="Endpoints for Retrieving Available Time Slots for Diagnosis and Treatment"
+ * )
+ */
+
 class AvailableSlotsController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/available-slots/diagnosis",
+     *     tags={"AvailableSlots"},
+     *     summary="Get Available Slots for Diagnosis (90-minute appointments)",
+     *     description="Retrieve available time slots for Diagnosis appointments grouped by practitioner.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful retrieval of available diagnosis slots",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="practitioners",
+     *                 type="object",
+     *                 description="List of practitioners with their IDs, names, and diagnosis prices"
+     *             ),
+     *             @OA\Property(
+     *                 property="available_slots_diagnose",
+     *                 type="object",
+     *                 description="Available diagnosis slots grouped by practitioner ID"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function indexDiagnosis()
     {
         // Logic to display available slots for Diagnosis, 90-minute appointments
@@ -34,6 +66,31 @@ class AvailableSlotsController extends Controller
         );
     }
 
+    /**
+     * @OA\Get(
+     *     path="/available-slots/treatment",
+     *     tags={"AvailableSlots"},
+     *     summary="Get Available Slots for Treatment (60-minute appointments)",
+     *     description="Retrieve available time slots for Treatment appointments grouped by practitioner.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful retrieval of available treatment slots",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="practitioners",
+     *                 type="object",
+     *                 description="List of practitioners with their IDs, names, and treatment prices"
+     *             ),
+     *             @OA\Property(
+     *                 property="available_slots_treatment",
+     *                 type="object",
+     *                 description="Available treatment slots grouped by practitioner ID"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function indexTreatment()
     {
         // Logic to display available slots for Treatment, 60-minute appointments

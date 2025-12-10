@@ -11,6 +11,12 @@ use App\Models\AvailableTimeSlotDiagnosis;
 use App\Services\IsAlreadyBookedService;
 use App\Services\AppointmentCreationService;
 
+/**
+ * @OA\Tag(
+ *     name="Appointment",
+ *     description="Endpoints for Creating and Managing Appointments"
+ * )
+ */
 class AppointmentController extends Controller
 {
     public function create(Request $request)
@@ -18,6 +24,95 @@ class AppointmentController extends Controller
         // Logic to show form for creating a new appointment
     }
 
+    /**
+     * @OA\Post(
+     *     path="/appointments",
+     *     tags={"Appointment"},
+     *     summary="Create a new appointment",
+     *     description="Endpoint to create a new appointment for diagnosis or treatment.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"practitioner_id","kind_of_appointment","appointment_date","appointment_start_time","patient_first_name","patient_last_name","patient_email","patient_phone"},
+     *             @OA\Property(property="practitioner_id", type="integer", example=1),
+     *             @OA\Property(property="kind_of_appointment", type="string", example="diagnose"),
+     *             @OA\Property(property="appointment_date", type="string", format="date", example="2024-07-15"),
+     *             @OA\Property(property="appointment_start_time", type="string", format="time", example="10:00:00"),
+     *             @OA\Property(property="patient_first_name", type="string", example="John"),
+     *             @OA\Property(property="patient_last_name", type="string", example="Doe"),
+     *             @OA\Property(property="patient_email", type="string", format="email", example="BxL2B@example.com"),
+     *             @OA\Property(property="patient_phone", type="string", example="123456789"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Appointment created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Su cita ha sido reservada con éxito"),
+     *             @OA\Property(property="appointment", type="object",
+     *                 @OA\Property(property="kind_of_appointment", type="string", example="diagnose"),
+     *                 @OA\Property(property="appointment_date", type="string", format="date", example="2024-07-15"),
+     *                 @OA\Property(property="appointment_start_time", type="string", format="time", example="10:00:00"),
+     *                 @OA\Property(property="patient_first_name", type="string", example="John"),
+     *                 @OA\Property(property="patient_last_name", type="string", example="Doe"),
+     *                 @OA\Property(property="patient_email", type="string", format="email", example="BxL2B@example.com"),
+     *                 @OA\Property(property="patient_phone", type="string", example="123456789"),
+     *                 @OA\Property(property="practitioner_id", type="integer", example=1),
+     *                 @OA\Property(property="status", type="string", example="pending"),
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-03-17T19:23:41.000000Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-03-17T19:23:41.000000Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Esta hora de visita no esta disponible")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Conflict",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="La cita solicitada se superpone con una cita existente.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Unprocessable Entity",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="errors", type="object",
+     *                 @OA\Property(property="patient_phone", type="array",
+     *                     @OA\Items(type="string", example="El campo patient_phone es obligatorio.")
+     *                 ),
+     *                 @OA\Property(property="patient_email", type="array",
+     *                     @OA\Items(type="string", example="El campo patient_email es obligatorio.")
+     *                 ),
+     *                 @OA\Property(property="patient_first_name", type="array",
+     *                     @OA\Items(type="string", example="El campo patient_first_name es obligatorio.")
+     *                 ),
+     *                 @OA\Property(property="patient_last_name", type="array",
+     *                     @OA\Items(type="string", example="El campo patient_last_name es obligatorio.")
+     *                 ),
+     *                 @OA\Property(property="kind_of_appointment", type="array",
+     *                     @OA\Items(type="string", example="El campo kind_of_appointment es obligatorio.")
+     *                 ),
+     *                 @OA\Property(property="appointment_date", type="array",
+     *                     @OA\Items(type="string", example="El campo appointment_date es obligatorio.")
+     *                 ),
+     *                 @OA\Property(property="appointment_start_time", type="array",
+     *                     @OA\Items(type="string", example="El campo appointment_start_time es obligatorio.")
+     *                 ),
+     *                 @OA\Property(property="practitioner_id", type="array",
+     *                     @OA\Items(type="string", example="El campo practitioner_id es obligatorio.")
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function store(StoreAppointmentWebRequest $request)
     {
         $validated = $request->validated();

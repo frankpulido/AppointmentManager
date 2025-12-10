@@ -6,6 +6,28 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * App\Models\AvailableTimeSlotDiagnosis
+ *
+ * @property int $id
+ * @property int $practitioner_id
+ * @property \Illuminate\Support\Carbon $slot_date
+ * @property string $slot_start_time
+ * @property string $slot_end_time
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Practitioner $practitioner
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlotDiagnosis newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlotDiagnosis newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlotDiagnosis query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlotDiagnosis whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlotDiagnosis whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlotDiagnosis wherePractitionerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlotDiagnosis whereSlotDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlotDiagnosis whereSlotEndTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlotDiagnosis whereSlotStartTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AvailableTimeSlotDiagnosis whereUpdatedAt($value)
+ */
 class AvailableTimeSlotDiagnosis extends Model
 {
     use HasFactory;

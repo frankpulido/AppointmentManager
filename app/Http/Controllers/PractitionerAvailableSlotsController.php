@@ -18,8 +18,43 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
+/**
+ * @OA\Tag(
+ *     name="PractitionerAvailableSlots",
+ *     description="Endpoints for Practitioners to Manage Their Available Time Slots"
+ * )
+ */
 class PractitionerAvailableSlotsController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/practitioner/available-slots",
+     *     tags={"PractitionerAvailableSlots"},
+     *     summary="Get Available Slots for Practitioner",
+     *     description="Retrieve available time slots for the authenticated practitioner.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful retrieval of available slots",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="practitioners",
+     *                 type="object",
+     *                 description="List of practitioners with their IDs and names"
+     *             ),
+     *             @OA\Property(
+     *                 property="treatment_available_slots",
+     *                 type="object",
+     *                 description="Available treatment slots grouped by practitioner ID"
+     *             ),
+     *             @OA\Property(
+     *                 property="diagnose_available_slots",
+     *                 type="object",
+     *                 description="Available diagnosis slots grouped by practitioner ID"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function index()
     {
         $user = auth('sanctum')->user();
@@ -74,6 +109,30 @@ class PractitionerAvailableSlotsController extends Controller
         ], 200); 
     }
 
+    /**
+     * @OA\Get(
+     *     path="/practitioner/available-slots/treatment",
+     *     tags={"PractitionerAvailableSlots"},
+     *     summary="Get Available Slots for Treatment (60-minute appointments) for Practitioner",
+     *     description="Retrieve available time slots for Treatment appointments for the authenticated practitioner.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful retrieval of available treatment slots",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="practitioners",
+     *                 type="object",
+     *                 description="List of practitioners with their IDs and names"
+     *             ),
+     *             @OA\Property(
+     *                 property="treatment_available_slots",
+     *                 type="object",
+     *                 description="Available treatment slots grouped by practitioner ID"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function indexTreatment()
     {
         $user = auth('sanctum')->user();
@@ -114,6 +173,30 @@ class PractitionerAvailableSlotsController extends Controller
     }
 
 
+    /**
+     * @OA\Get(
+     *     path="/practitioner/available-slots/diagnosis",
+     *     tags={"PractitionerAvailableSlots"},
+     *     summary="Get Available Slots for Diagnosis (30-minute appointments) for Practitioner",
+     *     description="Retrieve available time slots for Diagnosis appointments for the authenticated practitioner.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful retrieval of available diagnosis slots",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="practitioners",
+     *                 type="object",
+     *                 description="List of practitioners with their IDs and names"
+     *             ),
+     *             @OA\Property(
+     *                 property="diagnose_available_slots",
+     *                 type="object",
+     *                 description="Available diagnosis slots grouped by practitioner ID"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function indexDiagnosis()
     {
         $user = auth('sanctum')->user();
@@ -158,6 +241,48 @@ class PractitionerAvailableSlotsController extends Controller
         // Logic to show form for creating a new available slot
     }
 
+    /**
+     * @OA\Post(
+     *     path="/practitioner/available-slots",
+     *     tags={"PractitionerAvailableSlots"},
+     *     summary="Create a new available slot for Practitioner",
+     *     description="Endpoint to create a new available time slot for the authenticated practitioner.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"practitioner_id","kind_of_appointment","slot_date","slot_start_time"},
+     *             @OA\Property(property="practitioner_id", type="integer", example=1),
+     *             @OA\Property(property="kind_of_appointment", type="string", example="diagnose"),
+     *             @OA\Property(property="slot_date", type="string", format="date", example="2024-07-15"),
+     *             @OA\Property(property="slot_start_time", type="string", format="time", example="10:00:00"),
+     *             @OA\Property(property="slot_end_time", type="string", format="time", example="11:30:00", nullable=true),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Available slot created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="La hora disponible de visita ha sido creada con éxito"),
+     *             @OA\Property(property="slot", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="practitioner_id", type="integer", example=1),
+     *                 @OA\Property(property="slot_date", type="string", format="date", example="2024-07-15"),
+     *                 @OA\Property(property="slot_start_time", type="string", format="time", example="10:00:00"),
+     *                 @OA\Property(property="slot_end_time", type="string", format="time", example="11:30:00"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-03-17T19:23:41.000000Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-03-17T19:23:41.000000Z"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="La fecha y hora indicadas se solapan con una cita existente")
+     *         )
+     *     )
+     * )
+     */
     public function store(StoreAvailableSlotRequest $request) //Request instead of StoreAvailableSlotRequest to debug
     {
         $validated = $request->validated();
@@ -218,6 +343,37 @@ class PractitionerAvailableSlotsController extends Controller
         ], 201);
     }
     
+    /**
+     * @OA\Delete(
+     *     path="/practitioner/available-slots",
+     *     tags={"PractitionerAvailableSlots"},
+     *     summary="Delete an available slot for Practitioner",
+     *     description="Endpoint to delete an available time slot for the authenticated practitioner.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"practitioner_id","kind_of_appointment","slot_id"},
+     *             @OA\Property(property="practitioner_id", type="integer", example=1),
+     *             @OA\Property(property="kind_of_appointment", type="string", example="diagnose"),
+     *             @OA\Property(property="slot_id", type="integer", example=1),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Available slot deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="La hora disponible de visita ha sido eliminada con éxito")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Available slot not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="La hora disponible de visita indicada no existe")
+     *         )
+     *     )
+     * )
+     */
     public function destroy(DeleteAvailableSlotRequest $request)
     {
         $validated = $request->validated();
@@ -258,6 +414,30 @@ class PractitionerAvailableSlotsController extends Controller
         return response()->json(['message' => 'La hora disponible de visita indicada no existe'], 404);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/practitioner/available-slots/seed",
+     *     tags={"PractitionerAvailableSlots"},
+     *     summary="Seed Available Slots for Practitioner",
+     *     description="Endpoint to seed available time slots for the authenticated practitioner over a specified date range.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"practitioner_id","slots_start_date"},
+     *             @OA\Property(property="practitioner_id", type="integer", example=1),
+     *             @OA\Property(property="slots_start_date", type="string", format="date", example="2024-07-01"),
+     *             @OA\Property(property="slots_end_date", type="string", format="date", example="2024-07-31", nullable=true),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Available slots seeded successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Las horas disponibles de visita han sido generadas con éxito")
+     *         )
+     *     )
+     * )
+     */
     public function seed(SeedAvailableSlotsRequest $request)
     {
         $validated = $request->validated();

@@ -7,8 +7,41 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Observers\AppointmentObserver;
-use Carbon\Carbon;
-
+/**
+ * App\Models\Appointment
+ * @property int $id
+ * @property int $practitioner_id
+ * @property \Illuminate\Support\Carbon $appointment_date
+ * @property string $appointment_start_time
+ * @property string $appointment_end_time
+ * @property string $patient_first_name
+ * @property string $patient_last_name
+ * @property string $patient_email
+ * @property string $patient_phone
+ * @property string $kind_of_appointment
+ * @property string $status
+ * @property bool $on_line
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Practitioner $practitioner
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment whereAppointmentDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment whereAppointmentEndTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment whereAppointmentStartTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment whereKindOfAppointment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment whereOnLine($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment wherePatientEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment wherePatientFirstName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment wherePatientLastName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment wherePatientPhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment wherePractitionerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Appointment whereUpdatedAt($value)
+ */
 #[ObservedBy([AppointmentObserver::class])]
 class Appointment extends Model
 {

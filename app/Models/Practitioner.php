@@ -6,6 +6,31 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
 
+/**
+ * App\Models\Practitioner
+ *
+ * @property int $id
+ * @property string $first_name
+ * @property string $last_name
+ * @property array $specialties
+ * @property string $email
+ * @property string $phone
+ * @property array|null $custom_settings
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Practitioner newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Practitioner newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Practitioner query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Practitioner whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Practitioner whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Practitioner whereFirstName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Practitioner whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Practitioner whereLastName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Practitioner wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Practitioner whereSpecialties($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Practitioner whereCustomSettings($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Practitioner whereUpdatedAt($value)
+ */
 class Practitioner extends Model
 {
     use HasFactory;
