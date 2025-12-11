@@ -8,6 +8,7 @@ use App\Services\SlotJsonDelivery\SlotJsonDeliveryStrategy;
 use App\Services\SlotJsonDelivery\LocalFileStrategy;
 use App\Services\SlotJsonDelivery\RemoteApiStrategy;
 use InvalidArgumentException;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Force HTTPS in production only
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         // We need to run migrations automatically in production environment
         /* Not needed in Railway, as it runs 'php artisan migrate --force' in release phase
          * and it fails if there are no migrations to run.
