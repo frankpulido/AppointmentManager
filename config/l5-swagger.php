@@ -53,6 +53,7 @@ return [
         'routes' => [
             /*
              * Route for accessing parsed swagger annotations.
+             * MUST match what the Blade template/l5-swagger package uses.
              */
             'docs' => 'docs',
 
