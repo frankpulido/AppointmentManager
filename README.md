@@ -106,6 +106,12 @@ DB_PASSWORD="${{MySQL.MYSQLPASSWORD}}"
 RAILPACK_PHP_EXTENSIONS="calendar"
 ```
 
+**How it works:**
+- Railpack reads RAILPACK_PHP_EXTENSIONS during build time
+- Automatically installs the listed extensions (comma-separated: gd,redis,calendar,zip)
+- Available for all deploys, no scripts needed
+
+
 - **Step 4**: Then we can modify the railway.json file in our Laravel project adding to the deploy section : 1. the migrate/seed artisan command to the startCommand and a 2. the cronSchedule :
 ```json
 {
