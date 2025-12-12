@@ -112,7 +112,27 @@ RAILPACK_PHP_EXTENSIONS="calendar"
 - Available for all deploys, no scripts needed
 
 
-- **Step 4**: Then we can modify the railway.json file in our Laravel project adding to the deploy section : 1. the migrate/seed artisan command to the startCommand and a 2. the cronSchedule :
+- **Step 4**: Then we can modify the railway.json file in our Laravel project adding to the deploy section the migrate/seed artisan command to the startCommand :
+```json
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "RAILPACK",
+    "buildCommand": "composer install --no-dev --optimize-autoloader"
+  },
+  "deploy": {
+    "startCommand": "php artisan migrate:fresh --seed --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+  }
+}
+```
+
+Finally, we push changes of railway.json file to the GitHub repository and the project is going to redeploy beautifully seeding the database.
+
+## Keeping a DEMO Application in Production (Railway) repopulating  with `migrate:fresh —seed` daily at midnight.
+
+To keep a DEMO App in production we need to repopulate the databases with fake data that seeds the available time slots and the scheduled appointments for future dates. It requires scheduling a daily re-deployment everyday at midnight, for instance.
+
+I tried the adding the `migrate/seed` artisan command to the startCommand and along with a cronSchedule :
 ```json
 {
   "$schema": "https://railway.com/railway.schema.json",
@@ -125,16 +145,36 @@ RAILPACK_PHP_EXTENSIONS="calendar"
     "cronSchedule": "0 0 * * *"
   }
 }
+
+// THIS SOLUTION DOESN'T WORK
 ```
 
-Finally, we push changes of railway.json file to the GitHub repository and the project is going to redeploy beautifully seeding the database and scheduling a daily re-deployment everyday at midnight.
+## Why does it fail ?
 
-### To avoid using the calendar extension
-The error is clear: easter_date() function is not available in Railway's PHP environment.
+https://docs.railway.com/guides/cron-jobs
+
+An important requirement of a service that runs as a Cron, is that it terminates on completion and leaves no open resources. If a previous execution of the Cron service has a status of `Active`, the execution is still running and any subsequent executions of the Cron will be skipped.
+
+# DAILY RE-SEEDING IS WORK IN PROGRESS
+
+---
+
+## To avoid using the calendar extension
+
+When building the deployment I got the classic Railway / managed-hosting issue: the PHP calendar extension (which provides `easter_date()` is not available in production environment, so the global function call `easter_date()` fails.
 Problem :
 The easter_date() function requires the PHP Calendar extension, which isn't installed by default in Railway's PHP container.
-Solution :
-Update your IsHolidayService replacing easter_date() with Carbon/DateTime calculation:
+In the code we make use of this function to seed the Easter Holidays :
+```php
+$easter = easter_date($year);  // Native PHP, requires ext-calendar
+```
+## Solution 1 : **Polyfill the missing functions** in PHP
+
+Update your IsHolidayService replacing easter_date() with Carbon/DateTime calculation. Add a small, well-tested implementation of `easter_date()` (and any related functions you use) to your codebase. This is the fastest, most portable fix.
+
+I prefer to use built-in functions, so I was reluctant to accept a deployment that didn’t include all extensions that not only this but any other project needed.
+
+In case you prefer this option for portability across hosts, replace `easter_date()` with the pure PHP algorithm (Meeus/Jones/Butcher) that doesn't need extensions:
 
 ```php
 // In IsHolidayService
@@ -158,4 +198,57 @@ private function getEasterDate(int $year): Carbon
     
     return Carbon::create($year, $month, $day);
 }
+```
+
+---
+
+## Solution 2 : E**nable the extension in the PHP runtime**
+
+I initially opt for this one and it worked beautifully, but was not satisfied either :
+
+1. Add a tiny init script to your repo : `.railway/init.sh`
+    
+    ```purescript
+    #!/usr/bin/env bash
+    set -e
+    # install calendar extension if missing
+    php -r "exit(extension_loaded('calendar') ? 0 : 1)" || install-php-extensions calendar
+    # run migrations and seed the database
+    php artisan migrate:fresh --force --seed
+    ```
+    
+2. Make it executable locally and commit
+    
+    ```bash
+    chmod +x .railway/init.sh
+    git add .railway/init.sh
+    git commit -m "railway: init script to enable ext-calendar"
+    git push
+    ```
+    
+3. In Railway UI (project > service settings) change the **Start Command** from the default `/start-container.sh` to :
+    
+    ```bash
+    bash .railway/init.sh && /start-container.sh
+    ```
+
+---
+
+## Solution 3 : Take advantage of Railpack features
+
+In your Laravel app service on Railway, go to Variables > Raw Editor and define them exactly as shown below, using the reference syntax to pull values from your linked MySQL service :
+
+```php
+APP_ENV="production"
+APP_KEY="base64:your-laravel-key-in-.env"
+APP_DEBUG="false"
+DB_CONNECTION="mysql"
+DB_HOST="${{MySQL.MYSQLHOST}}"
+DB_PORT="${{MySQL.MYSQLPORT}}"
+DB_DATABASE="${{MySQL.MYSQL_DATABASE}}"
+DB_USERNAME="${{MySQL.MYSQLUSER}}"
+DB_PASSWORD="${{MySQL.MYSQLPASSWORD}}"
+
+# Add all extra php extensions you need separated by commas :
+RAILPACK_PHP_EXTENSIONS="calendar"
 ```

@@ -134,7 +134,6 @@
             dom_id: '#swagger-ui',
             urls: urls,
             "urls.primaryName": "{{ $documentationTitle }}",
-            //url: "{{ url('/docs') }}", // REPLACED: Direct link to the JSON spec
             operationsSorter: {!! isset($operationsSorter) ? '"' . $operationsSorter . '"' : 'null' !!},
             configUrl: {!! isset($configUrl) ? '"' . $configUrl . '"' : 'null' !!},
             validatorUrl: {!! isset($validatorUrl) ? '"' . $validatorUrl . '"' : 'null' !!},
